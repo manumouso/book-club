@@ -1,17 +1,15 @@
-/* eslint-disable prettier/prettier */
 import { IsString, IsNotEmpty, IsISBN, IsPositive, IsNumber, MaxLength } from 'class-validator';
 
-
 export class BookDto {
-
+        @IsNotEmpty()
         @IsISBN()
         isbn: string;
-        //asd
 
         @IsNotEmpty()
         @IsString()
         title: string;
 
+        @IsNotEmpty()
         @IsNumber()
         @IsPositive()
         @MaxLength(4)
@@ -21,7 +19,13 @@ export class BookDto {
         @IsString()
         publisher: string;
 
+        @IsNotEmpty()
         @IsString()
         synopsis: string;
+
+        @IsString()
+        autor: string;
+
+        ///////////////// GENRE ?? /////////////////
 
 }
