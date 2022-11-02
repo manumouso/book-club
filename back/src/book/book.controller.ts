@@ -8,11 +8,15 @@ import {
   Post,
   Put,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { GetUser, Public } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
 import { BookService } from './book.service';
+import { FileValidator } from './pipe';
 
 @UseGuards(JwtGuard)
 @Controller('books')
@@ -68,15 +72,28 @@ export class BookController {
   }
 
   /* armar el dto con todos los datos que se reciben del libro,
-   de la imagen de portada(mimetype, name,data/buffer/bytes) ponerle los decorator validaciones
+   la validacion de la imagen de portada(mimetype, y max size en FileValidator)
+   field name desde el front en form = 'file' y multipart/form-data
    crear el libro: primero crear el registro de la imagen de portada en DB, despues el autor 
    y por ultimo el libro, (generos estan precargados)
    porque tienen que existir las PK en esas tablas para poder crear las FK en tabla libros 
    guardar el id del usuario en ownerId
    */
+  @UseInterceptors(FileInterceptor('file'))
   @Post('me')
-  createBook(@Body() bookDto: any, @GetUser('id') userId: number) {
-    return this.bookService.createBook(bookDto, userId);
+  createBook(
+    @Body() bookDto: any,
+    @UploadedFile(FileValidator)
+    file: Express.Multer.File,
+    @GetUser('id') userId: number,
+  ) {
+    return this.bookService.createBook(
+      bookDto,
+      userId,
+      file.originalname,
+      file.mimetype,
+      file.buffer,
+    );
   }
 
   /* recibe TODOS los datos del libro incluyendo los que debe modificar y los que mantiene
@@ -98,7 +115,7 @@ export class BookController {
   se pueden modificar solo los libros propios 
   usando la desestructuracion del dto adentro del metodo update de prisma
   where:{
-    id: userId
+    id: bookId
   },
   data:{
     ...bookOptionalDto,
