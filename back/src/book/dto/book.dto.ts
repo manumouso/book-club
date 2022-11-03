@@ -1,4 +1,5 @@
-import { IsString, IsNotEmpty, IsISBN, IsPositive, IsNumber, MaxLength } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsString, IsNotEmpty, IsISBN, IsNumber, MaxLength, IsNumberString, isNumberString, IsInt } from 'class-validator';
 
 export class BookDto {
         @IsNotEmpty()
@@ -10,10 +11,8 @@ export class BookDto {
         title: string;
 
         @IsNotEmpty()
-        @IsNumber()
-        @IsPositive()
-        @MaxLength(4)
-        year: string;
+        @Transform(({ value }) => parseInt(value))
+        year: number;
 
         @IsNotEmpty()
         @IsString()
@@ -23,9 +22,15 @@ export class BookDto {
         @IsString()
         synopsis: string;
 
+        //Author//
         @IsString()
-        autor: string;
+        firstName: string;
 
-        ///////////////// GENRE ?? /////////////////
+        @IsString()
+        lastName: string;
+
+        //Genre//
+        @IsString()
+        genre: string;
 
 }
