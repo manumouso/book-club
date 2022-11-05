@@ -2,35 +2,32 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
-  Put,
   Query,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { join } from 'path';
 import { GetUser, Public } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
 import { BookService } from './book.service';
+import { CreateBookDto, EditBookDto } from './dto';
+import { removeFile, saveCoverImage } from './helper';
 import { FileValidator } from './pipe';
 
 @UseGuards(JwtGuard)
 @Controller('books')
 export class BookController {
-  constructor(private bookService: BookService /* inyectar todos los dto*/) {}
+  constructor(private bookService: BookService) {}
 
-  /*devuelve todos los libros, unica ruta Publica
-  para la imagen de portada en service hacer un map,
-  para cada libro que te devuelve la busqueda desde la base de datos -> .then(books=>{books.map(...)})
-  convertir imageData que esta en bytea a STRING en base 64
-  .toString('base64')
-  porque necesitamos desde el front llenar un 
-  elemento imagen de html <img src="data:image/jpeg;base64, <string en base 64 de la imagen>" /> 
-  */
   @Public()
   @Get('')
   getBooks() {
@@ -51,84 +48,101 @@ export class BookController {
 
   /* devuelve los detalles extra que especifica el tp sobre el libro */
   @Get('details/:bookId')
-  getDetails(@Param('bookId') bookIdDto: any) {
-    return this.bookService.getDetails(bookIdDto);
+  getDetails(@Param('bookId', ParseIntPipe) bookId: number) {
+    return this.bookService.getDetails(bookId);
   }
 
+  @Public()
+  @Get('covers/:bookId')
+  getBookCover(@Param('bookId', ParseIntPipe) bookId: number, @Res() res) {
+    const filename = this.bookService.getBookCover(bookId);
+    return res.sendFile(filename, {
+      root: './images',
+    });
+  }
+  @UseInterceptors(FileInterceptor('file', saveCoverImage))
+  @Post('covers/:bookId')
+  createBookCover(
+    @Param('bookId') bookId: any,
+    @GetUser('id') userId: number,
+    @UploadedFile(FileValidator)
+    file: Express.Multer.File,
+  ) {
+    try {
+      const bookIdToInt = parseInt(bookId);
+      if (isNaN(bookIdToInt))
+        throw new ForbiddenException('Book Id Must be a Number');
+
+      const fileDto = {
+        originalName: file.originalname,
+        mimeType: file.mimetype,
+        fileName: file.filename,
+      };
+      return this.bookService.createBookCover(bookIdToInt, userId, fileDto);
+    } catch (error) {
+      const imagesFolderPath = join(process.cwd(), 'images');
+      const fullCoverImagePath = join(imagesFolderPath + '/' + file.filename);
+
+      removeFile(fullCoverImagePath);
+
+      return { error };
+    }
+  }
+
+  //guardar extraer el filename viejo eliminar la imagen de images y guardar el nuevo filename
+  @UseInterceptors(FileInterceptor('file', saveCoverImage))
+  @Patch('covers/:bookId')
+  updateBookCover(
+    @Param('bookId') bookId: any,
+    @GetUser('id') userId: number,
+    @UploadedFile(FileValidator)
+    file: Express.Multer.File,
+  ) {
+    try {
+      const bookIdToInt = parseInt(bookId);
+      if (isNaN(bookIdToInt))
+        throw new ForbiddenException('Book Id Must be a Number');
+
+      const fileDto = {
+        originalName: file.originalname,
+        mimeType: file.mimetype,
+        fileName: file.filename,
+      };
+      return this.bookService.updateBookCover(bookIdToInt, userId, fileDto);
+    } catch (error) {
+      const imagesFolderPath = join(process.cwd(), 'images');
+      const fullCoverImagePath = join(imagesFolderPath + '/' + file.filename);
+
+      removeFile(fullCoverImagePath);
+
+      return { error };
+    }
+  }
+
+  @Public()
+  @Get('genres')
+  getBookGenres() {}
   /* devuelve un objeto que tiene un objeto con los libros que el usuario obtuvo del prestamo
   y otro objeto con los libros que le pertenecen
    myBooks: {borrowed:{},owned:{}}
-   
-   para la imagen de portada en service hacer un map,
-  para cada libro que te devuelve la busqueda desde la base de datos -> .then(books=>{books.map(...)})
-  convertir imageData que esta en bytea a STRING en base 64
-  .toString('base64')
-  porque necesitamos desde el front llenar un 
-  elemento imagen de html <img src="data:image/jpeg;base64, <string en base 64 de la imagen>" /> 
   */
   @Get('me')
   getMyBooks(@GetUser('id') userId: number) {
     return this.bookService.getMyBooks(userId);
   }
 
-  /* armar el dto con todos los datos que se reciben del libro,
-   la validacion de la imagen de portada(mimetype, y max size en FileValidator)
-   field name desde el front en form = 'file' y multipart/form-data
-   crear el libro: primero crear el registro de la imagen de portada en DB, despues el autor 
-   y por ultimo el libro, (generos estan precargados)
-   porque tienen que existir las PK en esas tablas para poder crear las FK en tabla libros 
-   guardar el id del usuario en ownerId
-   */
-  @UseInterceptors(FileInterceptor('file'))
   @Post('me')
-  createBook(
-    @Body() bookDto: any,
-    @UploadedFile(FileValidator)
-    file: Express.Multer.File,
-    @GetUser('id') userId: number,
-  ) {
-    return this.bookService.createBook(
-      bookDto,
-      userId,
-      file.originalname,
-      file.mimetype,
-      file.buffer,
-    );
+  createBook(@Body() bookDto: CreateBookDto, @GetUser('id') userId: number) {
+    return this.bookService.createBook(bookDto, userId);
   }
 
-  /* recibe TODOS los datos del libro incluyendo los que debe modificar y los que mantiene
-   el id del libro a modicar por route param
-   y se modifica solo si pertenece al usuario el libro
-  */
-  @Put('me/:bookId')
-  updateBook(
-    @Body() bookDto: any,
-    @Param('bookId') bookIdDto: any,
-    @GetUser('id') userId: number,
-  ) {
-    return this.bookService.updateBook(bookDto, bookIdDto, userId);
-  }
-
-  /* modifica solo los campos que usuario desea
-  en el dto se ponen todos los campos pero con ? , pueden ser nulos,
-  entonces se atrapan solo los que completa validamente el usuario
-  se pueden modificar solo los libros propios 
-  usando la desestructuracion del dto adentro del metodo update de prisma
-  where:{
-    id: bookId
-  },
-  data:{
-    ...bookOptionalDto,
-  }
-  te automatchea propiedad y valor de las cosas que existen en el dto
-   */
   @Patch('me/:bookId')
   patchBook(
-    @Body() bookOptionalDto: any,
-    @Param('bookId') bookIdDto: any,
+    @Body() bookDto: EditBookDto,
+    @Param('bookId', ParseIntPipe) bookId: number,
     @GetUser('id') userId: number,
   ) {
-    return this.bookService.patchBook(bookOptionalDto, bookIdDto, userId);
+    return this.bookService.patchBook(bookDto, bookId, userId);
   }
 
   /* antes de eliminar el libro fijarse que sea el dueño y que no este prestado */

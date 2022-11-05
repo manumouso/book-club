@@ -38,11 +38,11 @@ model Book {
   authorId Int    @unique
   author   Author @relation(fields: [authorId], references: [id])
 
-  genreId Int   @unique
+  genreId Int
   genre   Genre @relation(fields: [genreId], references: [id])
 
-  coverId Int   @unique
-  cover   Cover @relation(fields: [coverId], references: [id])
+  coverId Int?   @unique
+  cover   Cover? @relation(fields: [coverId], references: [id])
 
   @@map("books")
 }
@@ -58,19 +58,18 @@ model Author {
 }
 
 model Genre {
-  id   Int    @id @default(autoincrement())
-  name String @db.VarChar(30)
-
-  Book Book?
+  id    Int    @id @default(autoincrement())
+  name  String @db.VarChar(30)
+  books Book[]
 
   @@map("genres")
 }
 
 model Cover {
-  id        Int    @id @default(autoincrement())
-  imageName String @db.VarChar(30)
-  imageType String @db.VarChar(20)
-  imageData Bytes
+  id           Int    @id @default(autoincrement())
+  originalName String @db.VarChar(30)
+  mimeType     String @db.VarChar(20)
+  fileName     String @db.VarChar(70)
 
   Book Book?
 
