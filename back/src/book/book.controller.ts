@@ -34,11 +34,7 @@ export class BookController {
     return this.bookService.getBooks();
   }
 
-  /*devuelve los libros filtrados por la condicion y valor seleccionados por el usuario
-  desde el front puede ser un desplegable con las opciones para filtrar(year, title,author etc)
-  y un input para que ingrese el valar que quiere (1991 o 'el principito' etc)
-  armar dos dto uno para cada query param
-
+  /*
   url: /filterBy?filter=xxx&value=x9x
    */
   @Get('filterBy')
@@ -120,8 +116,11 @@ export class BookController {
   }
 
   @Public()
+  @Get('authors')
+  getAuthors() {}
+  @Public()
   @Get('genres')
-  getBookGenres() {}
+  getGenres() {}
   /* devuelve un objeto que tiene un objeto con los libros que el usuario obtuvo del prestamo
   y otro objeto con los libros que le pertenecen
    myBooks: {borrowed:{},owned:{}}
@@ -147,7 +146,10 @@ export class BookController {
 
   /* antes de eliminar el libro fijarse que sea el dueño y que no este prestado */
   @Delete('me/:bookId')
-  deleteBook(@Param('bookId') bookIdDto: any, @GetUser('id') userId: number) {
-    return this.bookService.deleteBook(bookIdDto, userId);
+  deleteBook(
+    @Param('bookId', ParseIntPipe) bookId: number,
+    @GetUser('id') userId: number,
+  ) {
+    return this.bookService.deleteBook(bookId, userId);
   }
 }

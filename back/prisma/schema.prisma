@@ -35,7 +35,7 @@ model Book {
   holderId Int?
   holder   User? @relation("holder", fields: [holderId], references: [id])
 
-  authorId Int    @unique
+  authorId Int
   author   Author @relation(fields: [authorId], references: [id])
 
   genreId Int
@@ -52,14 +52,15 @@ model Author {
   firstName String? @db.VarChar(30)
   lastName  String  @db.VarChar(60)
 
-  Book Book?
+  books Book[]
 
   @@map("authors")
 }
 
 model Genre {
-  id    Int    @id @default(autoincrement())
-  name  String @db.VarChar(30)
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(30)
+
   books Book[]
 
   @@map("genres")
