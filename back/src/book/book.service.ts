@@ -1,12 +1,22 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
-import { join } from 'path';
+import {
+  ForbiddenException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
+import { AuthorService } from 'src/author/author.service';
+import { CoverService } from 'src/cover/cover.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBookDto, EditBookDto } from './dto';
-import { removeFile } from './helper';
 
 @Injectable()
 export class BookService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private authorService: AuthorService,
+    @Inject(forwardRef(() => CoverService))
+    private coverService: CoverService,
+  ) {}
 
   async findBook(bookId: number) {
     const book = await this.prisma.book.findUnique({
@@ -32,81 +42,15 @@ export class BookService {
 
   async getDetails(bookId: number) {}
 
-  async getBookCover(bookId: number) {}
-
-  async createBookCover(bookId: number, userId: number, fileDto: any) {
-    try {
-      const book = await this.findBook(bookId);
-      if (book.coverId !== null)
-        throw new ForbiddenException(
-          'Cover Image Already Exists For This Book',
-        );
-      this.checkOwnership(book.ownerId, userId, 'Cover Creation');
-
-      const coverImage = await this.prisma.cover.create({
-        data: {
-          ...fileDto,
-        },
-      });
-      if (!coverImage) throw new ForbiddenException('Cover Creation Failed');
-
-      const updatedBook = await this.prisma.book.update({
-        where: {
-          id: bookId,
-        },
-        data: {
-          coverId: coverImage.id,
-        },
-      });
-
-      if (!updatedBook) throw new ForbiddenException('Book Update Failed');
-
-      return { bookId: updatedBook.id, coverImage };
-    } catch (error) {
-      const imagesFolderPath = join(process.cwd(), 'images');
-      const fullCoverImagePath = join(
-        imagesFolderPath + '/' + fileDto.fileName,
-      );
-
-      removeFile(fullCoverImagePath);
-      throw error;
-    }
-  }
-
-  async updateBookCover(bookId: number, userId: number, fileDto: any) {}
-
-  async getAuthors() {}
-  async getGenres() {}
-
   async getMyBooks(userId: number) {}
 
-  async createOrFindAuthor(authorDto: any, authorId?: number) {
-    if (!authorId) {
-      const author = await this.prisma.author.create({
-        data: {
-          ...authorDto,
-        },
-      });
-      if (!author) throw new ForbiddenException('Author Creation Failed');
-
-      return author.id;
-    }
-    const author = await this.prisma.author.findUnique({
-      where: {
-        id: authorId,
-      },
-    });
-    if (!author) throw new ForbiddenException('Author Id Not Found');
-
-    return author.id;
-  }
   async createBook(bookDto: CreateBookDto, userId: number) {
     try {
       const authorDto = {
         firstName: bookDto.firstName,
         lastName: bookDto.lastName,
       };
-      const idAuthor: number = await this.createOrFindAuthor(
+      const idAuthor: number = await this.authorService.createOrFindAuthor(
         authorDto,
         bookDto.authorId,
       );
@@ -130,46 +74,6 @@ export class BookService {
     }
   }
 
-  async updateAuthorIfPossible(
-    previousAuthorId: number,
-    idAuthor: number,
-    authorDto: any,
-  ) {
-    const findAuthorsInBooks = await this.prisma.book.findMany({
-      where: {
-        authorId: previousAuthorId,
-      },
-    });
-    if (findAuthorsInBooks.length === 1) {
-      const updateAuthor = await this.prisma.author.update({
-        where: {
-          id: idAuthor,
-        },
-        data: {
-          ...authorDto,
-        },
-      });
-      if (!updateAuthor) throw new ForbiddenException('Author Updated Failed');
-    }
-  }
-
-  async deleteAuthorIfPossible(idToDelete: number) {
-    const findAuthorsInBooks = await this.prisma.book.findMany({
-      where: {
-        authorId: idToDelete,
-      },
-    });
-    if (findAuthorsInBooks.length === 0) {
-      const deleteAuthor = await this.prisma.author.delete({
-        where: {
-          id: idToDelete,
-        },
-      });
-      if (!deleteAuthor)
-        throw new ForbiddenException('Previous Author Delete Failed');
-    }
-  }
-
   async patchBook(bookDto: EditBookDto, bookId: number, userId: number) {
     try {
       const book = await this.findBook(bookId);
@@ -181,12 +85,16 @@ export class BookService {
         firstName: bookDto.firstName,
         lastName: bookDto.lastName,
       };
-      const idAuthor: number = await this.createOrFindAuthor(
+      const idAuthor: number = await this.authorService.createOrFindAuthor(
         authorDto,
         bookDto.authorId,
       );
 
-      await this.updateAuthorIfPossible(previousAuthorId, idAuthor, authorDto);
+      await this.authorService.updateAuthorIfPossible(
+        previousAuthorId,
+        idAuthor,
+        authorDto,
+      );
 
       const updatedBook = await this.prisma.book.update({
         where: {
@@ -204,7 +112,7 @@ export class BookService {
       });
       if (!updatedBook) throw new ForbiddenException('Book Update Failed');
 
-      await this.deleteAuthorIfPossible(previousAuthorId);
+      await this.authorService.deleteAuthorIfPossible(previousAuthorId);
 
       return { bookId: updatedBook.id };
     } catch (error) {
@@ -229,7 +137,10 @@ export class BookService {
         },
       });
       if (!deletedBook) throw new ForbiddenException('Book Delete Failed');
-      await this.deleteAuthorIfPossible(book.authorId);
+
+      await this.authorService.deleteAuthorIfPossible(book.authorId);
+
+      await this.coverService.deleteBookCover(deletedBook.coverId);
       return { bookDeleted: deletedBook };
     } catch (error) {
       throw error;
