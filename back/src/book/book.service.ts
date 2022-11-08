@@ -42,7 +42,29 @@ export class BookService {
 
   async getDetails(bookId: number) {}
 
-  async getMyBooks(userId: number) {}
+  //falta paginacion, elegir algunos campos no todos: los mas relevantes
+  async getMyBooks(userId: number) {
+    const borrowedBooks = await this.prisma.book.findMany({
+      where: {
+        ownerId: userId,
+        holderId: {
+          not: null,
+        },
+      },
+      include: {
+        holder: true,
+      },
+    });
+
+    const availableBooks = await this.prisma.book.findMany({
+      where: {
+        ownerId: userId,
+        holderId: null,
+      },
+    });
+
+    return { myBooks: { borrowedBooks, availableBooks } };
+  }
 
   async createBook(bookDto: CreateBookDto, userId: number) {
     try {
@@ -50,6 +72,12 @@ export class BookService {
         firstName: bookDto.firstName,
         lastName: bookDto.lastName,
       };
+      const genre = await this.prisma.genre.findUnique({
+        where: {
+          id: bookDto.genreId,
+        },
+      });
+      if (!genre) throw new ForbiddenException('Genre Id Not Found');
       const idAuthor: number = await this.authorService.createOrFindAuthor(
         authorDto,
         bookDto.authorId,

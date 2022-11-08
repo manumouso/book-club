@@ -5,7 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async borrowBook(bookIdDto: any, userId: number) {}
+  async borrowBook(bookId: number, userId: number) {}
 
-  async returnBook(bookIdDto: any, userId: number) {}
+  async returnBook(bookId: number, userId: number) {}
 }

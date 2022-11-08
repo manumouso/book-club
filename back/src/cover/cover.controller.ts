@@ -1,11 +1,22 @@
-import { Controller, ForbiddenException, Get, Param, ParseIntPipe, Patch, Post, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Res,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard';
 import { CoverService } from './cover.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { join } from 'path';
-import { removeFile, saveCoverImage } from './helper';
+import { getPath, removeFile, saveCoverImage } from './helper';
 import { FileValidator } from './pipe';
 import { GetUser, Public } from 'src/auth/decorator';
+import { validateId } from 'src/book/helper';
 
 @UseGuards(JwtGuard)
 @Controller('covers')
@@ -14,12 +25,17 @@ export class CoverController {
 
   @Public()
   @Get(':bookId')
-  getBookCover(@Param('bookId', ParseIntPipe) bookId: number, @Res() res) {
-    const filename = this.coverService.getBookCover(bookId);
+  async getBookCover(
+    @Param('bookId', ParseIntPipe) bookId: number,
+    @Res() res,
+  ) {
+    validateId(bookId);
+    const filename: string = await this.coverService.getBookCover(bookId);
     return res.sendFile(filename, {
       root: './images',
     });
   }
+  //don't change '@Param('bookId') bookId: any'
   @UseInterceptors(FileInterceptor('file', saveCoverImage))
   @Post(':bookId')
   createBookCover(
@@ -30,8 +46,7 @@ export class CoverController {
   ) {
     try {
       const bookIdToInt = parseInt(bookId);
-      if (isNaN(bookIdToInt))
-        throw new ForbiddenException('Book Id Must be a Number');
+      validateId(bookIdToInt);
 
       const fileDto = {
         originalName: file.originalname,
@@ -40,16 +55,14 @@ export class CoverController {
       };
       return this.coverService.createBookCover(bookIdToInt, userId, fileDto);
     } catch (error) {
-      const imagesFolderPath = join(process.cwd(), 'images');
-      const fullCoverImagePath = join(imagesFolderPath + '/' + file.filename);
+      const coverPath = getPath(file.filename);
+      removeFile(coverPath);
 
-      removeFile(fullCoverImagePath);
-
-      return { error };
+      throw error;
     }
   }
 
-  //guardar extraer el filename viejo eliminar la imagen de images y guardar el nuevo filename
+  //don't change '@Param('bookId') bookId:any'
   @UseInterceptors(FileInterceptor('file', saveCoverImage))
   @Patch(':bookId')
   updateBookCover(
@@ -60,8 +73,7 @@ export class CoverController {
   ) {
     try {
       const bookIdToInt = parseInt(bookId);
-      if (isNaN(bookIdToInt))
-        throw new ForbiddenException('Book Id Must be a Number');
+      validateId(bookIdToInt);
 
       const fileDto = {
         originalName: file.originalname,
@@ -70,12 +82,10 @@ export class CoverController {
       };
       return this.coverService.updateBookCover(bookIdToInt, userId, fileDto);
     } catch (error) {
-      const imagesFolderPath = join(process.cwd(), 'images');
-      const fullCoverImagePath = join(imagesFolderPath + '/' + file.filename);
+      const coverPath = getPath(file.filename);
+      removeFile(coverPath);
 
-      removeFile(fullCoverImagePath);
-
-      return { error };
+      throw error;
     }
   }
 }

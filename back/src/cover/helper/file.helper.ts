@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import * as fs from 'fs';
 import path = require('path');
+import { join } from 'path';
 
 type validFileExtension = 'png' | 'jpeg' | 'jpg';
 type validMimeType = 'image/png' | 'image/jpeg' | 'image/jpg';
@@ -35,10 +36,9 @@ export const removeFile = (fullFilePath: string) => {
   });
 };
 
-export const renameFile = (filename: string, bookId: number) => {
-  const newName = bookId + 'bookId' + filename;
-  fs.rename(filename, newName, (err) => {
-    if (err) throw err;
-    console.log('file name updated');
-  });
+export const getPath = (filename: string): string => {
+  const imagesFolderPath = join(process.cwd(), 'images');
+  const coverImagePath = join(imagesFolderPath + '/' + filename);
+
+  return coverImagePath;
 };

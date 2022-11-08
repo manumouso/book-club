@@ -6,9 +6,13 @@ import {
   IsOptional,
   IsNumber,
   MaxLength,
+  IsInt,
+  Min,
+  Max,
 } from 'class-validator';
 
 export class CreateBookDto {
+
   @IsISBN()
   @IsNotEmpty()
   @MaxLength(30)
@@ -21,6 +25,9 @@ export class CreateBookDto {
 
   @IsNotEmpty()
   @IsNumber()
+  @IsInt()
+  @Min(0)
+  @Max(new Date().getFullYear())
   @Transform(({ value }) => parseInt(value))
   year: number;
 
@@ -31,11 +38,15 @@ export class CreateBookDto {
 
   @IsString()
   @IsOptional()
+  @MaxLength(1500)
   synopsis?: string;
 
   //Author//
   @IsNumber()
   @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(99999)
   @Transform(({ value }) => parseInt(value))
   authorId?: number;
 
@@ -52,6 +63,9 @@ export class CreateBookDto {
   //Genre//
   @IsNotEmpty()
   @IsNumber()
+  @IsInt()
+  @Min(1)
+  @Max(99999)
   @Transform(({ value }) => parseInt(value))
   genreId: number;
 }

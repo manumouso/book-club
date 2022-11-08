@@ -1,1 +1,1 @@
-export * from './save-cover.helper';
+export * from './id.helper';

@@ -5,6 +5,8 @@ import {
   IsOptional,
   MaxLength,
   IsNumber,
+  Min,
+  Max,
 } from 'class-validator';
 
 export class EditBookDto {
@@ -21,6 +23,8 @@ export class EditBookDto {
   @IsNumber()
   @Transform(({ value }) => parseInt(value))
   @IsOptional()
+  @Min(0)
+  @Max(new Date().getFullYear())
   year?: number;
 
   @IsString()
@@ -30,11 +34,14 @@ export class EditBookDto {
 
   @IsString()
   @IsOptional()
+  @MaxLength(1500)
   synopsis?: string;
 
   //Author//
   @Transform(({ value }) => parseInt(value))
   @IsOptional()
+  @Min(1)
+  @Max(99999)
   authorId?: number;
 
   @IsString()
@@ -52,5 +59,7 @@ export class EditBookDto {
   @IsNumber()
   @Transform(({ value }) => parseInt(value))
   @IsOptional()
+  @Min(1)
+  @Max(99999)
   genreId?: number;
 }
