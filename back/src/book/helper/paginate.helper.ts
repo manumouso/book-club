@@ -1,3 +1,4 @@
+//don't add a semicolon to the penultimate bracket
 export const booksBorrowedFromMe = (userId) => {
   return {
     where: {
@@ -23,7 +24,7 @@ export const booksBorrowedFromMe = (userId) => {
     },    
   }
 };
-
+//don't add a semicolon to the penultimate bracket
 export const availableBooks = (userId) => {
   return {
     where: {
@@ -41,7 +42,7 @@ export const availableBooks = (userId) => {
     },
   }
 };
-
+//don't add a semicolon to the penultimate bracket
 export const myBorrows = (userId) => {
   return {
     where: {
