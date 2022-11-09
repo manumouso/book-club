@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Param,
   ParseIntPipe,
@@ -13,8 +14,14 @@ import {
 import { GetUser, Public } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
 import { BookService } from './book.service';
-import { CreateBookDto, EditBookDto } from './dto';
-import { validateId } from './helper';
+import { CreateBookDto, EditBookDto, Paginate, PaginateParam } from './dto';
+
+import {
+  availableBooks,
+  booksBorrowedFromMe,
+  myBorrows,
+  validateId,
+} from './helper';
 
 @UseGuards(JwtGuard)
 @Controller('books')
@@ -45,6 +52,54 @@ export class BookController {
   @Get('me')
   getMyBooks(@GetUser('id') userId: number) {
     return this.bookService.getMyBooks(userId);
+  }
+
+  @Get('me/amounts')
+  getMyBooksAmounts(@GetUser('id') userId: number) {
+    return this.bookService.getMyBooksAmounts(userId);
+  }
+
+  @Get('me/paginate/:type')
+  async getMyBooksPaginate(
+    @GetUser('id') userId: number,
+    @Query() paginate: Paginate,
+    @Param() type: PaginateParam,
+  ) {
+    const getAmounts = await this.bookService.getMyBooksAmounts(userId);
+    if (type.type === 'availableBooks') {
+      const bookType = availableBooks(userId);
+      const amount = getAmounts.amounts.availableBooks;
+      return this.bookService.getMyBooksPaginate(
+        bookType,
+        amount,
+        paginate.take,
+        paginate.cursor,
+        paginate.booksLeftToTake,
+      );
+    }
+    if (type.type === 'booksBorrowedFromMe') {
+      const bookType = booksBorrowedFromMe(userId);
+      const amount = getAmounts.amounts.booksBorrowedFromMe;
+      return this.bookService.getMyBooksPaginate(
+        bookType,
+        amount,
+        paginate.take,
+        paginate.cursor,
+        paginate.booksLeftToTake,
+      );
+    }
+    if (type.type === 'myBorrows') {
+      const bookType = myBorrows(userId);
+      const amount = getAmounts.amounts.myBorrows;
+      return this.bookService.getMyBooksPaginate(
+        bookType,
+        amount,
+        paginate.take,
+        paginate.cursor,
+        paginate.booksLeftToTake,
+      );
+    }
+    throw new ForbiddenException('Book Type Not Found');
   }
 
   @Post('me')

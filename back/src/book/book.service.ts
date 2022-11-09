@@ -8,6 +8,7 @@ import { AuthorService } from 'src/author/author.service';
 import { CoverService } from 'src/cover/cover.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBookDto, EditBookDto } from './dto';
+import { availableBooks, booksBorrowedFromMe, myBorrows } from './helper';
 
 @Injectable()
 export class BookService {
@@ -42,28 +43,145 @@ export class BookService {
 
   async getDetails(bookId: number) {}
 
-  //falta paginacion, elegir algunos campos no todos: los mas relevantes
-  async getMyBooks(userId: number) {
-    const borrowedBooks = await this.prisma.book.findMany({
+  async validateCursor(cursor: number) {
+    const findCursor = await this.prisma.book.findUnique({
       where: {
-        ownerId: userId,
-        holderId: {
-          not: null,
+        id: cursor,
+      },
+    });
+
+    if (!findCursor) throw new ForbiddenException('Cursor Not Found');
+  }
+
+  validateTake(take: number, bookAmount: number, booksLeftToTake?: number) {
+    if (take > bookAmount)
+      throw new ForbiddenException('Take Is Bigger Than The Number Of Books');
+    if (isNaN(booksLeftToTake))
+      throw new ForbiddenException(
+        'Books Left To Take Required As Query Param',
+      );
+    if (booksLeftToTake < 0)
+      throw new ForbiddenException('Take Is Bigger Than Books Left To Take');
+  }
+  async getMyBooksPaginate(
+    bookType: any,
+    bookAmount: number,
+    take: number,
+    cursor?: number,
+    booksLeftToTake?: number,
+  ) {
+    try {
+      if (!cursor) {
+        const booksLeft = bookAmount - take;
+        this.validateTake(take, bookAmount, booksLeft);
+        const firstQueryResults = await this.prisma.book.findMany({
+          take: take,
+          ...bookType,
+          orderBy: {
+            id: 'asc',
+          },
+        });
+
+        const lastBookInResults = firstQueryResults[take - 1];
+        const myCursor = lastBookInResults.id;
+
+        return {
+          books: firstQueryResults,
+          take,
+          cursor: myCursor,
+          booksLeftToTake: booksLeft,
+        };
+      } else {
+        await this.validateCursor(cursor);
+        const booksLeft = booksLeftToTake - take;
+        this.validateTake(take, bookAmount, booksLeft);
+        const secondQueryResults = await this.prisma.book.findMany({
+          take: take,
+          skip: 1,
+          cursor: {
+            id: cursor,
+          },
+          ...bookType,
+          orderBy: {
+            id: 'asc',
+          },
+        });
+
+        const lastBookInResults = secondQueryResults[take - 1];
+        const myCursor = lastBookInResults.id;
+
+        return {
+          books: secondQueryResults,
+          take,
+          cursor: myCursor,
+          booksLeftToTake: booksLeft,
+        };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getMyBooksAmounts(userId: number) {
+    try {
+      const booksBorrowedFromMe = await this.prisma.book.count({
+        where: {
+          ownerId: userId,
+          holderId: {
+            not: null,
+          },
         },
-      },
-      include: {
-        holder: true,
-      },
-    });
+      });
+      const availableBooks = await this.prisma.book.count({
+        where: {
+          ownerId: userId,
+          holderId: null,
+        },
+      });
 
-    const availableBooks = await this.prisma.book.findMany({
-      where: {
-        ownerId: userId,
-        holderId: null,
-      },
-    });
+      const myBorrows = await this.prisma.book.count({
+        where: {
+          holderId: userId,
+        },
+      });
 
-    return { myBooks: { borrowedBooks, availableBooks } };
+      const amounts = { booksBorrowedFromMe, availableBooks, myBorrows };
+
+      return { amounts };
+    } catch (error) {
+      throw error;
+    }
+  }
+  async getMyBooks(userId: number) {
+    const booksBorrowed = booksBorrowedFromMe(userId);
+    const available = availableBooks(userId);
+    const myBorrow = myBorrows(userId);
+    try {
+      const booksBorrowedFromMe = await this.prisma.book.findMany({
+        ...booksBorrowed,
+        orderBy: {
+          id: 'asc',
+        },
+      });
+
+      const availableBooks = await this.prisma.book.findMany({
+        ...available,
+        orderBy: {
+          id: 'asc',
+        },
+      });
+
+      const myBorrows = await this.prisma.book.findMany({
+        ...myBorrow,
+        orderBy: {
+          id: 'asc',
+        },
+      });
+
+      return { myBooks: { booksBorrowedFromMe, availableBooks }, myBorrows };
+    } catch (error) {
+      throw error;
+    }
   }
 
   async createBook(bookDto: CreateBookDto, userId: number) {
