@@ -20,6 +20,7 @@ import {
   PaginateDto,
   PaginateParamDto,
 } from './dto';
+import { FilterBookDto } from './dto/filter-book.dto';
 
 import {
   availableBooks,
@@ -40,8 +41,8 @@ export class BookController {
   }
 
   @Get('filterBy')
-  filterBooks(@Query('filter') filterDto: any, @Query('value') valueDto: any) {
-    return this.bookService.filterBooks(filterDto, valueDto);
+  filterBooks(@Query() filterDto: FilterBookDto) {
+    return this.bookService.filterBooks(filterDto);
   }
 
   @Get('details/:bookId')

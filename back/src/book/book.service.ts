@@ -8,6 +8,7 @@ import { AuthorService } from 'src/author/author.service';
 import { CoverService } from 'src/cover/cover.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBookDto, EditBookDto } from './dto';
+import { FilterBookDto } from './dto/filter-book.dto';
 import { availableBooks, booksBorrowedFromMe, myBorrows } from './helper';
 
 @Injectable()
@@ -39,7 +40,132 @@ export class BookService {
   }
   async getBooks() {}
 
-  async filterBooks(filterDto: any, valueDto: any) {}
+  async filterIntBookTable(filter: string, value: any) {
+    const valueToInt = parseInt(value);
+    if (isNaN(valueToInt))
+      throw new ForbiddenException(
+        'You Must Enter A Number When Filtering By: ' + filter,
+      );
+    const books = await this.prisma.book.findMany({
+      where: {
+        [filter]: valueToInt,
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
+
+    return { books };
+  }
+
+  async filterStringBookTable(filter: string, value: string) {
+    const books = await this.prisma.book.findMany({
+      where: {
+        [filter]: {
+          contains: value,
+          mode: 'insensitive',
+        },
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
+
+    return { books };
+  }
+
+  async filterStringGenreTable(value: string) {
+    const genresIds = await this.prisma.genre.findMany({
+      where: {
+        name: {
+          contains: value,
+          mode: 'insensitive',
+        },
+      },
+      select: {
+        id: true,
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
+
+    const idsArr = genresIds.map((genresIds) => genresIds.id);
+
+    const books = await this.prisma.book.findMany({
+      where: {
+        genreId: {
+          in: idsArr,
+        },
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
+
+    return { books };
+  }
+  async filterStringAuthorTable(filter: string, value: string) {
+    const authorsIds = await this.prisma.author.findMany({
+      where: {
+        [filter]: {
+          contains: value,
+          mode: 'insensitive',
+        },
+      },
+      select: {
+        id: true,
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
+
+    const idsArr = authorsIds.map((authorsId) => authorsId.id);
+
+    const books = await this.prisma.book.findMany({
+      where: {
+        authorId: {
+          in: idsArr,
+        },
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
+
+    return { books };
+  }
+  async filterBooks(filterDto: FilterBookDto) {
+    try {
+      switch (filterDto.filter) {
+        case 'isbn':
+        case 'title':
+        case 'publisher':
+          return await this.filterStringBookTable(
+            filterDto.filter,
+            filterDto.value,
+          );
+        case 'year':
+          return await this.filterIntBookTable(
+            filterDto.filter,
+            filterDto.value,
+          );
+        case 'genre':
+          return await this.filterStringGenreTable(filterDto.value);
+        case 'firstName':
+        case 'lastName':
+          return await this.filterStringAuthorTable(
+            filterDto.filter,
+            filterDto.value,
+          );
+        default:
+          break;
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
 
   async getDetails(bookId: number) {}
 
