@@ -1,7 +1,7 @@
 import { Transform } from "class-transformer";
 import { IsInt, IsNotEmpty, IsNumber, IsOptional, Max, Min } from "class-validator";
 
-export class Paginate {
+export class PaginateDto {
   @IsNotEmpty()
   @IsNumber()
   @IsInt()

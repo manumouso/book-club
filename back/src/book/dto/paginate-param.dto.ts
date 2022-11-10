@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 
-export class PaginateParam {
+export class PaginateParamDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(25)

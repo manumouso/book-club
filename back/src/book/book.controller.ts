@@ -14,7 +14,12 @@ import {
 import { GetUser, Public } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
 import { BookService } from './book.service';
-import { CreateBookDto, EditBookDto, Paginate, PaginateParam } from './dto';
+import {
+  CreateBookDto,
+  EditBookDto,
+  PaginateDto,
+  PaginateParamDto,
+} from './dto';
 
 import {
   availableBooks,
@@ -34,15 +39,11 @@ export class BookController {
     return this.bookService.getBooks();
   }
 
-  /*
-  url: /filterBy?filter=xxx&value=x9x
-   */
   @Get('filterBy')
   filterBooks(@Query('filter') filterDto: any, @Query('value') valueDto: any) {
     return this.bookService.filterBooks(filterDto, valueDto);
   }
 
-  /* devuelve los detalles extra que especifica el tp sobre el libro */
   @Get('details/:bookId')
   getDetails(@Param('bookId', ParseIntPipe) bookId: number) {
     validateId(bookId);
@@ -62,8 +63,8 @@ export class BookController {
   @Get('me/paginate/:type')
   async getMyBooksPaginate(
     @GetUser('id') userId: number,
-    @Query() paginate: Paginate,
-    @Param() type: PaginateParam,
+    @Query() paginate: PaginateDto,
+    @Param() type: PaginateParamDto,
   ) {
     const getAmounts = await this.bookService.getMyBooksAmounts(userId);
     if (type.type === 'availableBooks') {
