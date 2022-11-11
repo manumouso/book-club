@@ -66,3 +66,26 @@ export const myBorrows = (userId) => {
     },
   }
 };
+//don't add a semicolon to the penultimate bracket
+export const getAllBooks = () => {
+  return {    
+    select: {
+      id: true,
+      isbn:true,
+      title: true,
+      publisher:true,
+      year:true,
+      coverId:true,
+      author: {
+        select: {
+          lastName: true,
+        },
+      },
+      genre: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  }
+};

@@ -1,14 +1,10 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { BookService } from 'src/book/book.service';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { MaxBorrow } from './enum';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private prisma: PrismaService,
-    private bookService: BookService,
-  ) {}
+  constructor(private bookService: BookService) {}
 
   async borrowBook(bookId: number, userId: number) {
     const book = await this.bookService.findBook(bookId);
@@ -23,16 +19,11 @@ export class UserService {
       );
     const now = new Date();
 
-    const updatedBook = await this.prisma.book.update({
-      where: {
-        id: bookId,
-      },
-      data: {
-        holderId: userId,
-        withdrawnAt: now,
-      },
-    });
-    if (!updatedBook) throw new ForbiddenException('Book Borrow Failed');
+    const updatedBook = await this.bookService.updateBookWhenBorrowed(
+      bookId,
+      userId,
+      now,
+    );
 
     return { borrowedBookId: updatedBook.id };
   }
@@ -47,16 +38,7 @@ export class UserService {
     if (book.holderId !== userId)
       throw new ForbiddenException('You Cannot Return A Book You Do Not Have');
 
-    const updatedBook = await this.prisma.book.update({
-      where: {
-        id: bookId,
-      },
-      data: {
-        holderId: null,
-        withdrawnAt: null,
-      },
-    });
-    if (!updatedBook) throw new ForbiddenException('Book Return Failed');
+    const updatedBook = await this.bookService.updateBookWhenReturned(bookId);
 
     return { returnedBookId: updatedBook.id };
   }

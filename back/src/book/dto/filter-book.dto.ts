@@ -25,7 +25,7 @@ export class FilterBookDto {
 
   @IsNotEmpty()
   @IsString()
-  @MaxLength(40)
+  @MaxLength(60)
   @Matches(/^[a-zA-Z0-9- ]+$/)
   value: any;
 }

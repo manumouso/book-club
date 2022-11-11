@@ -1,11 +1,42 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AuthorService {
   constructor(private prisma: PrismaService) {}
 
-  async getAuthors() {}
+  async getAuthors() {
+    const authors = await this.prisma.author.findMany({
+      orderBy: {
+        id: 'asc',
+      },
+    });
+    if (!authors) throw new UnprocessableEntityException('Cannot Get Authors');
+    return { authors };
+  }
+
+  async filterString(filter: string, value: string) {
+    const authorsIds = await this.prisma.author.findMany({
+      where: {
+        [filter]: {
+          contains: value,
+          mode: 'insensitive',
+        },
+      },
+      select: {
+        id: true,
+      },
+      orderBy: {
+        id: 'asc',
+      },
+    });
+
+    return authorsIds;
+  }
 
   async createOrFindAuthor(authorDto: any, authorId?: number) {
     if (!authorId) {
@@ -29,16 +60,11 @@ export class AuthorService {
   }
 
   async updateAuthorIfPossible(
-    previousAuthorId: number,
     idAuthor: number,
     authorDto: any,
+    authorsInBooksAmount: number,
   ) {
-    const findAuthorsInBooks = await this.prisma.book.findMany({
-      where: {
-        authorId: previousAuthorId,
-      },
-    });
-    if (findAuthorsInBooks.length === 1) {
+    if (authorsInBooksAmount === 1) {
       const updateAuthor = await this.prisma.author.update({
         where: {
           id: idAuthor,
@@ -51,13 +77,11 @@ export class AuthorService {
     }
   }
 
-  async deleteAuthorIfPossible(idToDelete: number) {
-    const findAuthorsInBooks = await this.prisma.book.findMany({
-      where: {
-        authorId: idToDelete,
-      },
-    });
-    if (findAuthorsInBooks.length === 0) {
+  async deleteAuthorIfPossible(
+    authorsInBooksAmount: number,
+    idToDelete: number,
+  ) {
+    if (authorsInBooksAmount === 0) {
       const deleteAuthor = await this.prisma.author.delete({
         where: {
           id: idToDelete,

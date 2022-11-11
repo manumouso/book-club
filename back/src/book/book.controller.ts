@@ -25,6 +25,7 @@ import { FilterBookDto } from './dto/filter-book.dto';
 import {
   availableBooks,
   booksBorrowedFromMe,
+  getAllBooks,
   myBorrows,
   validateId,
 } from './helper';
@@ -38,6 +39,25 @@ export class BookController {
   @Get('')
   getBooks() {
     return this.bookService.getBooks();
+  }
+  @Public()
+  @Get('amount')
+  getBooksAmounts() {
+    return this.bookService.getBooksAmount();
+  }
+  @Public()
+  @Get('paginate')
+  async getBooksPaginate(@Query() paginate: PaginateDto) {
+    const bookAmount = await this.bookService.getBooksAmount();
+    const booksSearch = getAllBooks();
+
+    return this.bookService.getBooksPaginate(
+      booksSearch,
+      bookAmount.amount,
+      paginate.take,
+      paginate.cursor,
+      paginate.booksLeftToTake,
+    );
   }
 
   @Get('filterBy')
@@ -71,7 +91,7 @@ export class BookController {
     if (type.type === 'availableBooks') {
       const bookType = availableBooks(userId);
       const amount = getAmounts.amounts.availableBooks;
-      return this.bookService.getMyBooksPaginate(
+      return this.bookService.getBooksPaginate(
         bookType,
         amount,
         paginate.take,
@@ -82,7 +102,7 @@ export class BookController {
     if (type.type === 'booksBorrowedFromMe') {
       const bookType = booksBorrowedFromMe(userId);
       const amount = getAmounts.amounts.booksBorrowedFromMe;
-      return this.bookService.getMyBooksPaginate(
+      return this.bookService.getBooksPaginate(
         bookType,
         amount,
         paginate.take,
@@ -93,7 +113,7 @@ export class BookController {
     if (type.type === 'myBorrows') {
       const bookType = myBorrows(userId);
       const amount = getAmounts.amounts.myBorrows;
-      return this.bookService.getMyBooksPaginate(
+      return this.bookService.getBooksPaginate(
         bookType,
         amount,
         paginate.take,

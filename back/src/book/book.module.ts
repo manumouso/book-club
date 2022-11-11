@@ -1,13 +1,14 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { AuthorModule } from 'src/author/author.module';
+import { AuthorService } from 'src/author/author.service';
 import { CoverModule } from 'src/cover/cover.module';
+import { GenreService } from 'src/genre/genre.service';
 import { BookController } from './book.controller';
 import { BookService } from './book.service';
 
 @Module({
-  imports: [AuthorModule, forwardRef(() => CoverModule)],
+  imports: [forwardRef(() => CoverModule)],
   controllers: [BookController],
-  providers: [BookService],
+  providers: [BookService, AuthorService, GenreService],
   exports: [BookService],
 })
 export class BookModule {}

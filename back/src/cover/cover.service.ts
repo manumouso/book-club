@@ -48,17 +48,8 @@ export class CoverService {
       });
       if (!coverImage) throw new ForbiddenException('Cover Creation Failed');
 
-      const updatedBook = await this.prisma.book.update({
-        where: {
-          id: bookId,
-        },
-        data: {
-          coverId: coverImage.id,
-        },
-      });
-
-      if (!updatedBook) throw new ForbiddenException('Book Update Failed');
-
+      const updatedBook = await this.bookService.updateBookCoverId(bookId,coverImage.id);
+      
       return { bookId: updatedBook.id, coverImage };
     } catch (error) {
       const coverPath = getPath(fileDto.fileName);

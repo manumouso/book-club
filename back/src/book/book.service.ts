@@ -3,19 +3,27 @@ import {
   forwardRef,
   Inject,
   Injectable,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { AuthorService } from 'src/author/author.service';
 import { CoverService } from 'src/cover/cover.service';
+import { GenreService } from 'src/genre/genre.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBookDto, EditBookDto } from './dto';
 import { FilterBookDto } from './dto/filter-book.dto';
-import { availableBooks, booksBorrowedFromMe, myBorrows } from './helper';
+import {
+  availableBooks,
+  booksBorrowedFromMe,
+  getAllBooks,
+  myBorrows,
+} from './helper';
 
 @Injectable()
 export class BookService {
   constructor(
     private prisma: PrismaService,
     private authorService: AuthorService,
+    private genreService: GenreService,
     @Inject(forwardRef(() => CoverService))
     private coverService: CoverService,
   ) {}
@@ -38,9 +46,27 @@ export class BookService {
         errorMessage + ' Attempt: You Must Be The Book Owner',
       );
   }
-  async getBooks() {}
+  async getBooks() {
+    const searchFilter = getAllBooks();
+    const books = await this.prisma.book.findMany({
+      ...searchFilter,
+      orderBy: {
+        id: 'asc',
+      },
+    });
+    if (!books) throw new UnprocessableEntityException('Cannot Get Books');
+    return { books };
+  }
+
+  async getBooksAmount() {
+    const amount = await this.prisma.book.count();
+    if (!amount)
+      throw new UnprocessableEntityException('Cannot Get Books Amount');
+    return { amount };
+  }
 
   async filterIntBookTable(filter: string, value: any) {
+    const searchFilter = getAllBooks();
     const valueToInt = parseInt(value);
     if (isNaN(valueToInt))
       throw new ForbiddenException(
@@ -50,6 +76,7 @@ export class BookService {
       where: {
         [filter]: valueToInt,
       },
+      ...searchFilter,
       orderBy: {
         id: 'asc',
       },
@@ -59,6 +86,7 @@ export class BookService {
   }
 
   async filterStringBookTable(filter: string, value: string) {
+    const searchFilter = getAllBooks();
     const books = await this.prisma.book.findMany({
       where: {
         [filter]: {
@@ -66,6 +94,7 @@ export class BookService {
           mode: 'insensitive',
         },
       },
+      ...searchFilter,
       orderBy: {
         id: 'asc',
       },
@@ -75,20 +104,8 @@ export class BookService {
   }
 
   async filterStringGenreTable(value: string) {
-    const genresIds = await this.prisma.genre.findMany({
-      where: {
-        name: {
-          contains: value,
-          mode: 'insensitive',
-        },
-      },
-      select: {
-        id: true,
-      },
-      orderBy: {
-        id: 'asc',
-      },
-    });
+    const searchFilter = getAllBooks();
+    const genresIds = await this.genreService.filterString(value);
 
     const idsArr = genresIds.map((genresIds) => genresIds.id);
 
@@ -98,6 +115,7 @@ export class BookService {
           in: idsArr,
         },
       },
+      ...searchFilter,
       orderBy: {
         id: 'asc',
       },
@@ -106,20 +124,8 @@ export class BookService {
     return { books };
   }
   async filterStringAuthorTable(filter: string, value: string) {
-    const authorsIds = await this.prisma.author.findMany({
-      where: {
-        [filter]: {
-          contains: value,
-          mode: 'insensitive',
-        },
-      },
-      select: {
-        id: true,
-      },
-      orderBy: {
-        id: 'asc',
-      },
-    });
+    const searchFilter = getAllBooks();
+    const authorsIds = await this.authorService.filterString(filter, value);
 
     const idsArr = authorsIds.map((authorsId) => authorsId.id);
 
@@ -129,6 +135,7 @@ export class BookService {
           in: idsArr,
         },
       },
+      ...searchFilter,
       orderBy: {
         id: 'asc',
       },
@@ -167,7 +174,35 @@ export class BookService {
     }
   }
 
-  async getDetails(bookId: number) {}
+  async getDetails(bookId: number) {
+    const book = await this.prisma.book.findUnique({
+      where: {
+        id: bookId,
+      },
+      select: {
+        id: true,
+        isbn: true,
+        title: true,
+        year: true,
+        publisher: true,
+        synopsis: true,
+        coverId: true,
+        author: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+        genre: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+    if (!book) throw new ForbiddenException('Book Id Not Found');
+    return { book };
+  }
 
   async validateCursor(cursor: number) {
     const findCursor = await this.prisma.book.findUnique({
@@ -189,8 +224,61 @@ export class BookService {
     if (booksLeftToTake < 0)
       throw new ForbiddenException('Take Is Bigger Than Books Left To Take');
   }
-  async getMyBooksPaginate(
-    bookType: any,
+
+  async firstQuery(take: number, searchType: any, booksLeft: number) {
+    const firstQueryResults = await this.prisma.book.findMany({
+      take: take,
+      ...searchType,
+      orderBy: {
+        id: 'asc',
+      },
+    });
+
+    const lastBookInResults = firstQueryResults[take - 1];
+    if (!lastBookInResults)
+      throw new ForbiddenException('There Are No More Books Left To Take');
+    const myCursor = lastBookInResults?.id;
+
+    return {
+      books: firstQueryResults,
+      take,
+      cursor: myCursor,
+      booksLeftToTake: booksLeft,
+    };
+  }
+
+  async secondQuery(
+    take: number,
+    cursor: number,
+    searchType: any,
+    booksLeft: number,
+  ) {
+    const secondQueryResults = await this.prisma.book.findMany({
+      take: take,
+      skip: 1,
+      cursor: {
+        id: cursor,
+      },
+      ...searchType,
+      orderBy: {
+        id: 'asc',
+      },
+    });
+
+    const lastBookInResults = secondQueryResults[take - 1];
+    if (!lastBookInResults)
+      throw new ForbiddenException('There Are No More Books Left To Take');
+    const myCursor = lastBookInResults?.id;
+
+    return {
+      books: secondQueryResults,
+      take,
+      cursor: myCursor,
+      booksLeftToTake: booksLeft,
+    };
+  }
+  async getBooksPaginate(
+    searchType: any,
     bookAmount: number,
     take: number,
     cursor?: number,
@@ -200,48 +288,14 @@ export class BookService {
       if (!cursor) {
         const booksLeft = bookAmount - take;
         this.validateTake(take, bookAmount, booksLeft);
-        const firstQueryResults = await this.prisma.book.findMany({
-          take: take,
-          ...bookType,
-          orderBy: {
-            id: 'asc',
-          },
-        });
 
-        const lastBookInResults = firstQueryResults[take - 1];
-        const myCursor = lastBookInResults.id;
-
-        return {
-          books: firstQueryResults,
-          take,
-          cursor: myCursor,
-          booksLeftToTake: booksLeft,
-        };
+        return this.firstQuery(take, searchType, booksLeft);
       } else {
         await this.validateCursor(cursor);
         const booksLeft = booksLeftToTake - take;
         this.validateTake(take, bookAmount, booksLeft);
-        const secondQueryResults = await this.prisma.book.findMany({
-          take: take,
-          skip: 1,
-          cursor: {
-            id: cursor,
-          },
-          ...bookType,
-          orderBy: {
-            id: 'asc',
-          },
-        });
 
-        const lastBookInResults = secondQueryResults[take - 1];
-        const myCursor = lastBookInResults.id;
-
-        return {
-          books: secondQueryResults,
-          take,
-          cursor: myCursor,
-          booksLeftToTake: booksLeft,
-        };
+        return this.secondQuery(take, cursor, searchType, booksLeft);
       }
     } catch (error) {
       throw error;
@@ -316,12 +370,8 @@ export class BookService {
         firstName: bookDto.firstName,
         lastName: bookDto.lastName,
       };
-      const genre = await this.prisma.genre.findUnique({
-        where: {
-          id: bookDto.genreId,
-        },
-      });
-      if (!genre) throw new ForbiddenException('Genre Id Not Found');
+      const genre = await this.genreService.findGenre(bookDto.genreId);
+
       const idAuthor: number = await this.authorService.createOrFindAuthor(
         authorDto,
         bookDto.authorId,
@@ -335,12 +385,12 @@ export class BookService {
           publisher: bookDto.publisher,
           synopsis: bookDto.synopsis,
           authorId: idAuthor,
-          genreId: bookDto.genreId,
+          genreId: genre.id,
           ownerId: userId,
         },
       });
       if (!book) throw new ForbiddenException('Book Creation Failed');
-      return { bookId: book.id };
+      return { book };
     } catch (error) {
       throw error;
     }
@@ -362,10 +412,15 @@ export class BookService {
         bookDto.authorId,
       );
 
+      const authorsInBooksAmount = await this.prisma.book.count({
+        where: {
+          authorId: previousAuthorId,
+        },
+      });
       await this.authorService.updateAuthorIfPossible(
-        previousAuthorId,
         idAuthor,
         authorDto,
+        authorsInBooksAmount,
       );
 
       const updatedBook = await this.prisma.book.update({
@@ -384,9 +439,17 @@ export class BookService {
       });
       if (!updatedBook) throw new ForbiddenException('Book Update Failed');
 
-      await this.authorService.deleteAuthorIfPossible(previousAuthorId);
+      const authorsInBooksAmount2 = await this.prisma.book.count({
+        where: {
+          authorId: previousAuthorId,
+        },
+      });
+      await this.authorService.deleteAuthorIfPossible(
+        authorsInBooksAmount2,
+        previousAuthorId,
+      );
 
-      return { bookId: updatedBook.id };
+      return { updatedBook };
     } catch (error) {
       throw error;
     }
@@ -410,12 +473,66 @@ export class BookService {
       });
       if (!deletedBook) throw new ForbiddenException('Book Delete Failed');
 
-      await this.authorService.deleteAuthorIfPossible(book.authorId);
+      const authorsInBooksAmount = await this.prisma.book.count({
+        where: {
+          authorId: deletedBook.authorId,
+        },
+      });
+      await this.authorService.deleteAuthorIfPossible(
+        authorsInBooksAmount,
+        deletedBook.authorId,
+      );
 
       await this.coverService.deleteBookCover(deletedBook.coverId);
-      return { bookDeleted: deletedBook };
+      return { deletedBook };
     } catch (error) {
       throw error;
     }
+  }
+
+  async updateBookCoverId(bookId: number, newCoverId: number) {
+    const updatedBook = await this.prisma.book.update({
+      where: {
+        id: bookId,
+      },
+      data: {
+        coverId: newCoverId,
+      },
+    });
+
+    if (!updatedBook)
+      throw new ForbiddenException('Book Cover Id Update Failed');
+
+    return updatedBook;
+  }
+
+  async updateBookWhenBorrowed(bookId: number, userId: number, now: any){
+    const updatedBook = await this.prisma.book.update({
+      where: {
+        id: bookId,
+      },
+      data: {
+        holderId: userId,
+        withdrawnAt: now,
+      },
+    });
+    if (!updatedBook) throw new ForbiddenException('Book Borrow Failed');
+
+    return updatedBook;
+  }
+
+  async updateBookWhenReturned(bookId: number){
+    const updatedBook = await this.prisma.book.update({
+      where: {
+        id: bookId,
+      },
+      data: {
+        holderId: null,
+        withdrawnAt: null,
+      },
+    });
+    if (!updatedBook) throw new ForbiddenException('Book Return Failed');
+
+    return updatedBook;
   }
 }
