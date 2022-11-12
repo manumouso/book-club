@@ -1,4 +1,3 @@
-export enum MaxBorrow{
-
-    MAX_BORROWS = 7
+export enum MaxBorrow {
+  MAX_BORROWS = 7,
 }

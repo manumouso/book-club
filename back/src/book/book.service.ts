@@ -9,8 +9,8 @@ import { AuthorService } from 'src/author/author.service';
 import { CoverService } from 'src/cover/cover.service';
 import { GenreService } from 'src/genre/genre.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateBookDto, EditBookDto } from './dto';
-import { FilterBookDto } from './dto/filter-book.dto';
+import { CreateBookDto, EditBookDto, FilterBookDto } from './dto';
+import { FilterBookType } from './enum';
 import {
   availableBooks,
   booksBorrowedFromMe,
@@ -146,22 +146,22 @@ export class BookService {
   async filterBooks(filterDto: FilterBookDto) {
     try {
       switch (filterDto.filter) {
-        case 'isbn':
-        case 'title':
-        case 'publisher':
+        case FilterBookType.ISBN:
+        case FilterBookType.TITLE:
+        case FilterBookType.PUBLISHER:
           return await this.filterStringBookTable(
             filterDto.filter,
             filterDto.value,
           );
-        case 'year':
+        case FilterBookType.YEAR:
           return await this.filterIntBookTable(
             filterDto.filter,
             filterDto.value,
           );
-        case 'genre':
+        case FilterBookType.GENRE:
           return await this.filterStringGenreTable(filterDto.value);
-        case 'firstName':
-        case 'lastName':
+        case FilterBookType.FIRSTNAME:
+        case FilterBookType.LASTNAME:
           return await this.filterStringAuthorTable(
             filterDto.filter,
             filterDto.value,

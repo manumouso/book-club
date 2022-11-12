@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Delete,
-  ForbiddenException,
   Get,
   Param,
   ParseIntPipe,
@@ -17,10 +16,13 @@ import { BookService } from './book.service';
 import {
   CreateBookDto,
   EditBookDto,
+  FilterBookDto,
   PaginateDto,
   PaginateParamDto,
 } from './dto';
-import { FilterBookDto } from './dto/filter-book.dto';
+
+import { MyBooksType } from './enum';
+
 
 import {
   availableBooks,
@@ -88,7 +90,7 @@ export class BookController {
     @Param() type: PaginateParamDto,
   ) {
     const getAmounts = await this.bookService.getMyBooksAmounts(userId);
-    if (type.type === 'availableBooks') {
+    if (type.type === MyBooksType.AVAILABLE) {
       const bookType = availableBooks(userId);
       const amount = getAmounts.amounts.availableBooks;
       return this.bookService.getBooksPaginate(
@@ -99,7 +101,7 @@ export class BookController {
         paginate.booksLeftToTake,
       );
     }
-    if (type.type === 'booksBorrowedFromMe') {
+    if (type.type === MyBooksType.BORROWED_FROM_ME) {
       const bookType = booksBorrowedFromMe(userId);
       const amount = getAmounts.amounts.booksBorrowedFromMe;
       return this.bookService.getBooksPaginate(
@@ -110,7 +112,7 @@ export class BookController {
         paginate.booksLeftToTake,
       );
     }
-    if (type.type === 'myBorrows') {
+    if (type.type === MyBooksType.MY_BORROWS) {
       const bookType = myBorrows(userId);
       const amount = getAmounts.amounts.myBorrows;
       return this.bookService.getBooksPaginate(
@@ -121,7 +123,6 @@ export class BookController {
         paginate.booksLeftToTake,
       );
     }
-    throw new ForbiddenException('Book Type Not Found');
   }
 
   @Post('me')

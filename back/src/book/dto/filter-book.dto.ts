@@ -6,6 +6,7 @@ import {
   Matches,
   MaxLength,
 } from 'class-validator';
+import { FilterBookType } from '../enum';
 
 export class FilterBookDto {
   @IsNotEmpty()
@@ -13,13 +14,13 @@ export class FilterBookDto {
   @IsString()
   @IsAlpha()
   @IsIn([
-    'isbn',
-    'year',
-    'title',
-    'genre',
-    'publisher',
-    'firstName',
-    'lastName',
+    FilterBookType.ISBN,
+    FilterBookType.TITLE,
+    FilterBookType.YEAR,
+    FilterBookType.PUBLISHER,
+    FilterBookType.GENRE,
+    FilterBookType.FIRSTNAME,
+    FilterBookType.LASTNAME,
   ])
   filter: string;
 
