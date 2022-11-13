@@ -2,9 +2,9 @@
   "name": "book-club-api",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "manum",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT License",
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
