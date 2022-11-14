@@ -97,7 +97,17 @@ export default function SignIn() {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign In
+                Ingresar
+              </Button>
+              <Button
+                type="button"
+                fullWidth
+                variant="contained"
+                color='secondary'
+                href='/catalogo'
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Ingresar como invitado
               </Button>
             </Box>
           </Box>

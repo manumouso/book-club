@@ -22,7 +22,7 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const theme = createTheme();
 
-export default function TusPrestamos() {
+export default function Catalogo() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -50,7 +50,7 @@ export default function TusPrestamos() {
               color="text.primary"
               gutterBottom
             >
-              Libros a préstamo
+              Catálogo
             </Typography>
           </Container>
         </Box>

@@ -22,7 +22,7 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const theme = createTheme();
 
-export default function TusPrestamos() {
+export default function MisLibros() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -38,8 +38,8 @@ export default function TusPrestamos() {
         <Box
           sx={{
             bgcolor: 'background.paper',
-            pt: 8,
-            pb: 6,
+            pt: 6,
+            pb: 2,
           }}
         >
           <Container maxWidth="sm">
@@ -50,7 +50,7 @@ export default function TusPrestamos() {
               color="text.primary"
               gutterBottom
             >
-              Libros a préstamo
+              Mis Libros
             </Typography>
           </Container>
         </Box>
