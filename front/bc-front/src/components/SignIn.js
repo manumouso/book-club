@@ -18,6 +18,7 @@ import fondoLibro from "../utils/imagenes/libro_bg.jpg";
 const theme = createTheme();
 
 export default function SignIn() {
+  
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -61,7 +62,11 @@ export default function SignIn() {
             <Typography component="h1" variant="h5">
               Ingresa
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <Box 
+              component="form" 
+              noValidate 
+              onSubmit={handleSubmit} 
+              sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
                 required
