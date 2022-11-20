@@ -50,6 +50,7 @@ $ yarn db:dev:seed
 - Auth:
 
   - Public:
+  
     POST /auth/signup
 
     POST /auth/signin
@@ -58,12 +59,14 @@ $ yarn db:dev:seed
 - Author:
 
   - Public:
+  
     GET /authors
     Response: {authors}
 
 - Book
 
   - Public:
+  
     GET /books
     Response: {books}
 
