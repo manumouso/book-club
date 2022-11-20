@@ -22,52 +22,182 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+## CRUD REST API
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Book Club API using NestJS, Docker, Postgres, PassportJS, Prisma ORM, Argon2, Multer and Dotenv.
 
 ## Installation
 
 ```bash
-$ npm install
+$ yarn
 ```
 
 ## Running the app
 
 ```bash
-# development
-$ npm run start
+# start postgres in docker and push migrations
+$ yarn db:dev:restart
 
-# watch mode
-$ npm run start:dev
+# start api in dev watch mode
+$ yarn start:dev
 
-# production mode
-$ npm run start:prod
+# seed database
+$ yarn db:dev:seed
 ```
 
-## Test
+## Endpoints
+
+- Auth
+
+  - Public
+  
+    - POST /auth/signup
+
+    - POST /auth/signin
+    
+      Request: Body: { email, password }
+      
+      Response: { access_token }
+
+- Author
+
+  - Public
+  
+    - GET /authors
+    
+      Response: { authors }
+
+- Book
+
+  - Public
+  
+    - GET /books
+    
+      Response: { books }
+
+    - GET /books/amount 
+    
+      Response: { amount }
+
+    - GET /books/paginate
+    
+      Request: Query: { take, cursor?, booksLeftToTake? }
+      
+      Response: { books, take, cursor, booksLeftToTake }
+
+  - Authorization ---> Request: Header: { Authorization: Bearer access_token }
+
+    - GET /books/filterBy
+    
+      Request: Query: { filter, value }
+      
+      Response: { books }
+
+    - GET /books/details/:bookId
+    
+      Request: Param: { bookId }
+      
+      Response: { book }
+
+    - GET /books/me
+    
+      Response: { myBooks: { booksBorrowedFromMe, availableBooks }, myBorrows }
+
+    - GET /books/me/amounts
+    
+      Response: { amounts }
+
+    - GET /books/me/paginate/available
+    
+      Request: Query: { take, cursor?, booksLeftToTake? }
+      
+      Response: { books, take, cursor, booksLeftToTake }
+
+    - GET /books/me/paginate/borrowedFromMe
+    
+      Request: Query: { take, cursor?, booksLeftToTake? }
+      
+      Response: { books, take, cursor, booksLeftToTake }
+
+    - GET /books/me/paginate/myBorrows
+    
+      Request: Query: { take, cursor?, booksLeftToTake? }
+      
+      Response: { books, take, cursor, booksLeftToTake }
+
+    - POST /books/me
+    
+      Request: Body: { isbn, title, year, publisher, synopsis?, authorId?, firstName?, lastName, genreId }
+      
+      Response: { book }
+
+    - PATCH /books/me/:bookId
+    
+      Request: Param: { bookId }, Body: { isbn?, title?, year?, publisher?, synopsis?, authorId?, firstName?, lastName?, genreId? }
+      
+      Response: { updatedBook }
+
+    - DELETE /books/me/:bookId
+    
+      Request: Param: { bookId }
+      
+      Response: { deletedBook }
+
+- Cover
+
+  - Public
+
+    - GET /covers/:bookId
+    
+      Request: Param: { bookId }
+      
+      Response: File (CoverImage)
+
+  - Authorization ---> Request: Header: { Authorization: Bearer access_token }
+
+    - POST /covers/:bookId
+    
+      Request: Param: { bookId }, File (field name:'file')
+      
+      Response: { bookId, coverImage }
+
+    - PATCH /covers/:bookId
+    
+      Request: Param: { bookId }, File (field name:'file')
+      
+      Response: { bookId, updatedCoverImage }
+
+- Genre
+
+  - Public
+
+    - GET /genres
+    
+      Response: { genres }
+
+- User
+
+  - Authorization ---> Request: Header: { Authorization: Bearer access_token }
+
+    - PATCH /users/me/borrows/:bookId
+    
+      Request: Param: { bookId }
+      
+      Response: { borrowedBookId }
+
+    - PATCH /users/me/returns/:bookId
+    
+      Request: Param: { bookId }
+      
+      Response: { returnedBookId }
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+- '?': Is an optional field, if it is present in the form/url even if the value is null or '' 
+  it is taken as the field has a value and will be validated.
+  Not including it is correct when you do not want to send the data
+- PORT: 3333
 ```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+MIT licensed.

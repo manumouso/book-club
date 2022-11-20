@@ -2,10 +2,10 @@ import { HttpStatus, ParseFilePipeBuilder } from '@nestjs/common';
 
 export const FileValidator = new ParseFilePipeBuilder()
   .addFileTypeValidator({
-    fileType: /(jpg|jpeg|png|gif)$/,
+    fileType: /(jpg|jpeg|png)$/,
   })
   .addMaxSizeValidator({
-    maxSize: 500000,
+    maxSize: 5000000,
   })
   .build({
     fileIsRequired: true,
