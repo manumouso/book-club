@@ -39,7 +39,7 @@ $ yarn
 $ yarn db:dev:restart
 
 # start api in dev watch mode
-$ $ yarn start:dev
+$ yarn start:dev
 
 # seed database
 $ yarn db:dev:seed
@@ -47,98 +47,154 @@ $ yarn db:dev:seed
 
 ## Endpoints
 
-- Auth:
+- Auth
 
-  - Public:
-    POST /auth/signup
+  - Public
+  
+    - POST /auth/signup
 
-    POST /auth/signin
-    Request: Body: {email, password}; Response: {access_token}
+    - POST /auth/signin
+    
+      Request: Body: { email, password }
+      
+      Response: { access_token }
 
-- Author:
+- Author
 
-  - Public:
-    GET /authors
-    Response: {authors}
+  - Public
+  
+    - GET /authors
+    
+      Response: { authors }
 
 - Book
 
-  - Public:
-    GET /books
-    Response: {books}
+  - Public
+  
+    - GET /books
+    
+      Response: { books }
 
-    GET /books/amount
-    Response: {amount}
+    - GET /books/amount 
+    
+      Response: { amount }
 
-    GET /books/paginate
-    Request: Query: {take, cursor?, booksLeftToTake?}; Response:{books, take, cursor, booksLeftToTake}
+    - GET /books/paginate
+    
+      Request: Query: { take, cursor?, booksLeftToTake? }
+      
+      Response: { books, take, cursor, booksLeftToTake }
 
-  - Authorization: ---> Request: Header: {Authorization: Bearer access_token}
+  - Authorization ---> Request: Header: { Authorization: Bearer access_token }
 
-    GET /books/filterBy
-    Request: Query: {filter,value}; Response: {books}
+    - GET /books/filterBy
+    
+      Request: Query: { filter, value }
+      
+      Response: { books }
 
-    GET /books/details/:bookId
-    Request: Param: {bookId}; Response: {book}
+    - GET /books/details/:bookId
+    
+      Request: Param: { bookId }
+      
+      Response: { book }
 
-    GET /books/me
-    Response: {myBooks:{booksBorrowedFromMe, availableBooks},myBorrows}
+    - GET /books/me
+    
+      Response: { myBooks: { booksBorrowedFromMe, availableBooks }, myBorrows }
 
-    GET /books/me/amounts
-    Response: {amounts}
+    - GET /books/me/amounts
+    
+      Response: { amounts }
 
-    GET /books/me/paginate/available
-    Request: Query: {take, cursor?, booksLeftToTake?}; Response: {books, take, cursor, booksLeftToTake}
+    - GET /books/me/paginate/available
+    
+      Request: Query: { take, cursor?, booksLeftToTake? }
+      
+      Response: { books, take, cursor, booksLeftToTake }
 
-    GET /books/me/paginate/borrowedFromMe
-    Request: Query: {take, cursor?, booksLeftToTake?}; Response: {books, take, cursor, booksLeftToTake}
+    - GET /books/me/paginate/borrowedFromMe
+    
+      Request: Query: { take, cursor?, booksLeftToTake? }
+      
+      Response: { books, take, cursor, booksLeftToTake }
 
-    GET /books/me/paginate/myBorrows
-    Request: Query: {take, cursor?, booksLeftToTake?}; Response: {books, take, cursor, booksLeftToTake}
+    - GET /books/me/paginate/myBorrows
+    
+      Request: Query: { take, cursor?, booksLeftToTake? }
+      
+      Response: { books, take, cursor, booksLeftToTake }
 
-    POST /books/me
-    Request: Body: {isbn. title, year, publisher, synopsis?, authorId?, firstName?, lastName, genreId}; Response: {book}
+    - POST /books/me
+    
+      Request: Body: { isbn, title, year, publisher, synopsis?, authorId?, firstName?, lastName, genreId }
+      
+      Response: { book }
 
-    PATCH /books/me/:bookId
-    Request: Param: {bookId}, Body: {isbn?. title?, year?, publisher?, synopsis?, authorId?, firstName?, lastName?, genreId?}; Response: {updatedBook}
+    - PATCH /books/me/:bookId
+    
+      Request: Param: { bookId }, Body: { isbn?, title?, year?, publisher?, synopsis?, authorId?, firstName?, lastName?, genreId? }
+      
+      Response: { updatedBook }
 
-    DELETE /books/me/:bookId
-    Request: Param: {bookId}; Response: {deletedBook}
+    - DELETE /books/me/:bookId
+    
+      Request: Param: { bookId }
+      
+      Response: { deletedBook }
 
 - Cover
 
-  - Public:
+  - Public
 
-    GET /covers/:bookId
-    Request: Param: {bookId}; Response: File (CoverImage)
+    - GET /covers/:bookId
+    
+      Request: Param: { bookId }
+      
+      Response: File (CoverImage)
 
-  - Authorization: ---> Request: Header: {Authorization: Bearer access_token}
+  - Authorization ---> Request: Header: { Authorization: Bearer access_token }
 
-    POST /covers/:bookId
-    Request: Param: {bookId}, File (field name:'file'); Response: {bookId, coverImage}
+    - POST /covers/:bookId
+    
+      Request: Param: { bookId }, File (field name:'file')
+      
+      Response: { bookId, coverImage }
 
-    PATCH /covers/:bookId
-    Request: Param: {bookId}, File (field name:'file'); Response: {bookId, updatedCoverImage}
+    - PATCH /covers/:bookId
+    
+      Request: Param: { bookId }, File (field name:'file')
+      
+      Response: { bookId, updatedCoverImage }
 
 - Genre
 
-  - Public:
+  - Public
 
-    GET /genres
-    Response: {genres}
+    - GET /genres
+    
+      Response: { genres }
 
 - User
 
-  - Authorization: ---> Request: Header: {Authorization: Bearer access_token}
+  - Authorization ---> Request: Header: { Authorization: Bearer access_token }
 
-    PATCH /users/me/borrows/:bookId
-    Request: Param: {bookId}; Response: {borrowedBookId}
+    - PATCH /users/me/borrows/:bookId
+    
+      Request: Param: { bookId }
+      
+      Response: { borrowedBookId }
 
-    PATCH /users/me/returns/:bookId
-    Request: Param: {bookId}; Response: {returnedBookId}
+    - PATCH /users/me/returns/:bookId
+    
+      Request: Param: { bookId }
+      
+      Response: { returnedBookId }
 
 ```bash
-- '?': Is an optional field, if it is present in the form even if the value is null or '' it is taken as the field has a value and will be validated. Not including it in the form is correct when you do not want to send the data
+- '?': Is an optional field, if it is present in the form/url even if the value is null or '' 
+  it is taken as the field has a value and will be validated.
+  Not including it is correct when you do not want to send the data
 - PORT: 3333
 ```
 
