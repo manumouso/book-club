@@ -192,7 +192,7 @@ $ yarn db:dev:seed
       Response: { returnedBookId }
 
 ```bash
-- '?': Is an optional field, if it is present in the form even if the value is null or '' 
+- '?': Is an optional field, if it is present in the form/url even if the value is null or '' 
   it is taken as the field has a value and will be validated.
   Not including it in the form is correct when you do not want to send the data
 - PORT: 3333
