@@ -10,5 +10,7 @@ export class AuthorController {
 
   @Public()
   @Get('')
-  getAuthors() {}
+  getAuthors() {
+    return this.authorService.getAuthors();
+  }
 }

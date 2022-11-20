@@ -10,5 +10,7 @@ export class GenreController {
 
   @Public()
   @Get('')
-  getGenres() {}
+  getGenres() {
+    return this.genreService.getGenres();
+  }
 }
