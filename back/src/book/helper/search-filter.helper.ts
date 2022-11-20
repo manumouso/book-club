@@ -11,7 +11,6 @@ export const booksBorrowedFromMe = (userId) => {
     select: {
       id: true,
       title: true,
-      withdrawnAt: true,
       author: {
         select: {
           lastName: true,
@@ -22,6 +21,7 @@ export const booksBorrowedFromMe = (userId) => {
           email: true,
         },
       },
+      withdrawnAt: true,
     },    
   }
 };
@@ -52,12 +52,12 @@ export const myBorrows = (userId) => {
     select: {
       id: true,
       title: true,
-      withdrawnAt: true,
       author: {
         select: {
           lastName: true,
         },
       },
+      withdrawnAt: true,
       owner: {
         select: {
           email: true,

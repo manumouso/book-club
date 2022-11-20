@@ -1,10 +1,14 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { BookService } from 'src/book/book.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { MaxBorrow } from './enum';
 
 @Injectable()
 export class UserService {
-  constructor(private bookService: BookService) {}
+  constructor(
+    private bookService: BookService,
+    private prisma: PrismaService,
+  ) {}
 
   async borrowBook(bookId: number, userId: number) {
     const book = await this.bookService.findBook(bookId);
@@ -41,5 +45,38 @@ export class UserService {
     const updatedBook = await this.bookService.updateBookWhenReturned(bookId);
 
     return { returnedBookId: updatedBook.id };
+  }
+
+  async createUser(email: string, hash: string) {
+    const user = await this.prisma.user.create({
+      data: {
+        email,
+        hash,
+      },
+    });
+
+    return user;
+  }
+
+  async findUserByEmail(email: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+    if (!user) throw new ForbiddenException('Credentials Incorrect');
+
+    return user;
+  }
+
+  async findUserBySub(payloadSub: number) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: payloadSub,
+      },
+    });
+    if (user) delete user.hash;
+
+    return user;
   }
 }

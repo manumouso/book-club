@@ -13,16 +13,7 @@ import {
 import { GetUser, Public } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
 import { BookService } from './book.service';
-import {
-  CreateBookDto,
-  EditBookDto,
-  FilterBookDto,
-  PaginateDto,
-  PaginateParamDto,
-} from './dto';
-
-import { MyBooksType } from './enum';
-
+import { CreateBookDto, EditBookDto, FilterBookDto, PaginateDto } from './dto';
 
 import {
   availableBooks,
@@ -83,46 +74,56 @@ export class BookController {
     return this.bookService.getMyBooksAmounts(userId);
   }
 
-  @Get('me/paginate/:type')
-  async getMyBooksPaginate(
+  @Get('me/paginate/available')
+  async getMyAvailableBooksPaginate(
     @GetUser('id') userId: number,
     @Query() paginate: PaginateDto,
-    @Param() type: PaginateParamDto,
   ) {
     const getAmounts = await this.bookService.getMyBooksAmounts(userId);
-    if (type.type === MyBooksType.AVAILABLE) {
-      const bookType = availableBooks(userId);
-      const amount = getAmounts.amounts.availableBooks;
-      return this.bookService.getBooksPaginate(
-        bookType,
-        amount,
-        paginate.take,
-        paginate.cursor,
-        paginate.booksLeftToTake,
-      );
-    }
-    if (type.type === MyBooksType.BORROWED_FROM_ME) {
-      const bookType = booksBorrowedFromMe(userId);
-      const amount = getAmounts.amounts.booksBorrowedFromMe;
-      return this.bookService.getBooksPaginate(
-        bookType,
-        amount,
-        paginate.take,
-        paginate.cursor,
-        paginate.booksLeftToTake,
-      );
-    }
-    if (type.type === MyBooksType.MY_BORROWS) {
-      const bookType = myBorrows(userId);
-      const amount = getAmounts.amounts.myBorrows;
-      return this.bookService.getBooksPaginate(
-        bookType,
-        amount,
-        paginate.take,
-        paginate.cursor,
-        paginate.booksLeftToTake,
-      );
-    }
+
+    const bookType = availableBooks(userId);
+    const amount = getAmounts.amounts.availableBooks;
+    return this.bookService.getBooksPaginate(
+      bookType,
+      amount,
+      paginate.take,
+      paginate.cursor,
+      paginate.booksLeftToTake,
+    );
+  }
+  @Get('me/paginate/borrowedFromMe')
+  async getBooksBorrowedFromMePaginate(
+    @GetUser('id') userId: number,
+    @Query() paginate: PaginateDto,
+  ) {
+    const getAmounts = await this.bookService.getMyBooksAmounts(userId);
+
+    const bookType = booksBorrowedFromMe(userId);
+    const amount = getAmounts.amounts.booksBorrowedFromMe;
+    return this.bookService.getBooksPaginate(
+      bookType,
+      amount,
+      paginate.take,
+      paginate.cursor,
+      paginate.booksLeftToTake,
+    );
+  }
+  @Get('me/paginate/myBorrows')
+  async getMyBorrowsPaginate(
+    @GetUser('id') userId: number,
+    @Query() paginate: PaginateDto,
+  ) {
+    const getAmounts = await this.bookService.getMyBooksAmounts(userId);
+
+    const bookType = myBorrows(userId);
+    const amount = getAmounts.amounts.myBorrows;
+    return this.bookService.getBooksPaginate(
+      bookType,
+      amount,
+      paginate.take,
+      paginate.cursor,
+      paginate.booksLeftToTake,
+    );
   }
 
   @Post('me')
