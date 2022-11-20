@@ -47,9 +47,9 @@ $ yarn db:dev:seed
 
 ## Endpoints
 
-- Auth:
+- Auth
 
-  - Public:
+  - Public
   
     - POST /auth/signup
 
@@ -59,9 +59,9 @@ $ yarn db:dev:seed
       
       Response: { access_token }
 
-- Author:
+- Author
 
-  - Public:
+  - Public
   
     - GET /authors
     
@@ -69,7 +69,7 @@ $ yarn db:dev:seed
 
 - Book
 
-  - Public:
+  - Public
   
     - GET /books
     
@@ -85,7 +85,7 @@ $ yarn db:dev:seed
       
       Response: { books, take, cursor, booksLeftToTake }
 
-  - Authorization: ---> Request: Header: { Authorization: Bearer access_token }
+  - Authorization ---> Request: Header: { Authorization: Bearer access_token }
 
     - GET /books/filterBy
     
@@ -145,7 +145,7 @@ $ yarn db:dev:seed
 
 - Cover
 
-  - Public:
+  - Public
 
     - GET /covers/:bookId
     
@@ -153,7 +153,7 @@ $ yarn db:dev:seed
       
       Response: File (CoverImage)
 
-  - Authorization: ---> Request: Header: { Authorization: Bearer access_token }
+  - Authorization ---> Request: Header: { Authorization: Bearer access_token }
 
     - POST /covers/:bookId
     
@@ -169,7 +169,7 @@ $ yarn db:dev:seed
 
 - Genre
 
-  - Public:
+  - Public
 
     - GET /genres
     
@@ -177,7 +177,7 @@ $ yarn db:dev:seed
 
 - User
 
-  - Authorization: ---> Request: Header: { Authorization: Bearer access_token }
+  - Authorization ---> Request: Header: { Authorization: Bearer access_token }
 
     - PATCH /users/me/borrows/:bookId
     
