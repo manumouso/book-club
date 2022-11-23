@@ -52,7 +52,7 @@ export class BookController {
       paginate.booksLeftToTake,
     );
   }
-
+  @Public()
   @Get('filterBy')
   filterBooks(@Query() filterDto: FilterBookDto) {
     return this.bookService.filterBooks(filterDto);

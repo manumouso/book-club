@@ -48,8 +48,11 @@ export class CoverService {
       });
       if (!coverImage) throw new ForbiddenException('Cover Creation Failed');
 
-      const updatedBook = await this.bookService.updateBookCoverId(bookId,coverImage.id);
-      
+      const updatedBook = await this.bookService.updateBookCoverId(
+        bookId,
+        coverImage.id,
+      );
+
       return { bookId: updatedBook.id, coverImage };
     } catch (error) {
       const coverPath = getPath(fileDto.fileName);

@@ -103,7 +103,7 @@ export const books = [
   },
   {
     isbn: '978-5-7466-0142-1',
-    title: 'Cloudy With a Chance of Meatballs ',
+    title: 'Cloudy With a Chance of Meatballs',
     year: 1994,
     publisher: 'Jazzy Publications',
   },
