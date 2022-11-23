@@ -38,11 +38,11 @@ $ yarn
 # start postgres in docker and push migrations
 $ yarn db:dev:restart
 
-# start api in dev watch mode
-$ yarn start:dev
-
 # seed database
 $ yarn db:dev:seed
+
+# start api in dev watch mode
+$ yarn start:dev
 ```
 
 ## Endpoints
