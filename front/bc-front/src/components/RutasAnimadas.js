@@ -9,6 +9,7 @@ import Catalogo from './Catalogo';
 import NewBookForm from './NewBookForm';
 import AddCover from './AddCover';
 import Detail from './Detail';
+import Unauthorized from './Unauthorized';
 
 
 export default function RutasAnimadas() {
@@ -95,6 +96,16 @@ export default function RutasAnimadas() {
                                         transition={{ duration: 0.8 }}
                                         className='lobby'>
                                         <Detail />
+                                </motion.div>}>
+                        </Route>
+                        <Route path='/Unauthorized' element={
+                                <motion.div
+                                        initial={{ y: 10, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        exit={{ y: -10, opacity: 0 }}
+                                        transition={{ duration: 0.8 }}
+                                        className='lobby'>
+                                        <Unauthorized />
                                 </motion.div>}>
                         </Route>
                 </Routes>

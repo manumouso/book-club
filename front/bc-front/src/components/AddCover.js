@@ -24,6 +24,9 @@ const AddCover = () => {
                         if (resp.status === 201) return (
                                 navigate('/MisLibros')
                         )
+                        else if (resp.status === 401) return (
+                                navigate('/Unauthorized')
+                        )
                 } catch (error) {
                         console.log(error);
                 }
