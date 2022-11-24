@@ -87,7 +87,7 @@ export default function Catalogo() {
                 { value: "year", label: "Year" },
                 { value: "publisher", label: "Publisher" },
                 { value: "firstName", label: "Author first name" },
-                { value: "genre", label: "Gender" },
+                { value: "genre", label: "Genre" },
                 { value: "lastName", label: "Author last name" },
         ]
 
