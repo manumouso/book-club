@@ -113,6 +113,11 @@ export default function Catalogo() {
 
         const token = localStorage.getItem('atoken')
 
+        function clearToken()
+        {
+                localStorage.removeItem('atoken');
+        }
+
         return (
                 <ThemeProvider theme={theme}>
                         <CssBaseline />
@@ -121,7 +126,7 @@ export default function Catalogo() {
                                         <Button style={{ "color": "white" }} href="/Catalogo">Catalogo 📜</Button>
                                         <Button style={{ "color": "white" }} href="/MisLibros">Mis libros 📚</Button>
                                         <Button style={{ "color": "white" }} href="/MisPrestamos">Prestamos ♻️</Button>
-                                        <Button style={{ "color": "white" }} href="/">Salir 👋🏻</Button>
+                                        <Button onClick={ clearToken } style={{ "color": "white" }} href="/">Salir 👋🏻</Button>
 
                                 </Toolbar>
                         </AppBar>}
