@@ -127,7 +127,6 @@ export default function Catalogo() {
                                         <Button style={{ "color": "white" }} href="/MyBooks">My Books 📚</Button>
                                         <Button style={{ "color": "white" }} href="/MyLoans">My loans ♻️</Button>
                                         <Button onClick={ clearToken } style={{ "color": "white" }} href="/">Logout 👋🏻</Button>
-
                                 </Toolbar>
                         </AppBar>}
                         <main>
