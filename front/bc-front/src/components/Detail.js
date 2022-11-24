@@ -73,7 +73,7 @@ export default function Detail() {
                         <CssBaseline />
                         <AppBar position="relative">
                                 <Toolbar style={{ "display": "flex", "justifyContent": "space-around" }}>
-                                        <Button style={{ "color": "white" }} href="/Catalogo">Catalog 📜</Button>
+                                        <Button style={{ "color": "white" }} href="/Catalog">Catalog 📜</Button>
                                         {token && <Button style={{ "color": "white" }} href="/MyBook">My Books 📚</Button>}
                                         {token && <Button style={{ "color": "white" }} href="/MyLoans">My loans ♻️</Button>}
                                         {token && <Button style={{ "color": "white" }} href="/">Logout 👋🏻</Button>}
