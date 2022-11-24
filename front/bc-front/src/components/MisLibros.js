@@ -68,7 +68,7 @@ export default function MisLibros(props) {
                 <ThemeProvider theme={theme}>
                         <CssBaseline />
                         <AppBar position="relative">
-                        <Toolbar style={{ "display": "flex", "justifyContent": "space-around" }}>
+                                <Toolbar style={{ "display": "flex", "justifyContent": "space-around" }}>
                                         <Button style={{ "color": "white" }} href="/Catalog">Catalog 📜</Button>
                                         <Button style={{ "color": "white" }} href="/MyBooks">My Books 📚</Button>
                                         <Button style={{ "color": "white" }} href="/MyLoans">My loans ♻️</Button>

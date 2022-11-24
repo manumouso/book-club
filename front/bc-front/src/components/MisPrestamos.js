@@ -59,10 +59,10 @@ export default function MisPrestamos() {
                         <CssBaseline />
                         <AppBar position="relative">
                                 <Toolbar style={{ "display": "flex", "justifyContent": "space-around" }}>
-                                        <Button style={{ "color": "white" }} href="/Catalogo">Catalogo 📜</Button>
-                                        <Button style={{ "color": "white" }} href="/MisLibros">Mis libros 📚</Button>
-                                        <Button style={{ "color": "white" }} href="/MisPrestamos">Prestamos ♻️</Button>
-                                        <Button onClick={ clearToken } style={{ "color": "white" }} href="/">Salir 👋🏻</Button>
+                                        <Button style={{ "color": "white" }} href="/Catalog">Catalog 📜</Button>
+                                        <Button style={{ "color": "white" }} href="/MyBooks">My Books 📚</Button>
+                                        <Button style={{ "color": "white" }} href="/MyLoans">My loans ♻️</Button>
+                                        <Button onClick={ clearToken } style={{ "color": "white" }} href="/">Logout 👋🏻</Button>
                                 </Toolbar>
                         </AppBar>
                         <main>
