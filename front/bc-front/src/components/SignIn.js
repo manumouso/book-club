@@ -31,7 +31,7 @@ export default function SignIn(props) {
 
         function redirectHomePage() {
                 return (
-                        navigate('/MisLibros')
+                        navigate('/MyBooks')
                 )
         }
 
@@ -99,7 +99,7 @@ export default function SignIn(props) {
                                                         <LockOutlinedIcon />
                                                 </Avatar>
                                                 <Typography component="h1" variant="h5">
-                                                        Ingresa
+                                                        Sign in
                                                 </Typography>
                                                 <Box
                                                         component="form"
@@ -111,7 +111,7 @@ export default function SignIn(props) {
                                                                 required
                                                                 fullWidth
                                                                 id="email"
-                                                                label="correo"
+                                                                label="email"
                                                                 name="email"
                                                                 autoComplete="email"
                                                                 autoFocus
@@ -121,7 +121,7 @@ export default function SignIn(props) {
                                                                 required
                                                                 fullWidth
                                                                 name="password"
-                                                                label="contraseña"
+                                                                label="password"
                                                                 type="password"
                                                                 id="password"
                                                                 autoComplete="current-password"
@@ -136,18 +136,18 @@ export default function SignIn(props) {
                                                                 variant="contained"
                                                                 sx={{ mt: 3, mb: 2 }}
                                                         >
-                                                                Ingresar
+                                                                Sign in
                                                         </Button>
                                                         <Button
                                                                 type="button"
                                                                 fullWidth
                                                                 variant="contained"
                                                                 color='secondary'
-                                                                href='/catalogo'
+                                                                href='/catalog'
                                                                 onClick={handleGuest}
                                                                 sx={{ mt: 3, mb: 2 }}
                                                         >
-                                                                Ir al catalogo publico
+                                                                Go to public catalog
                                                         </Button>
                                                         <Button
                                                                 type="button"
@@ -157,7 +157,7 @@ export default function SignIn(props) {
                                                                 href='/'
                                                                 sx={{ mt: 3, mb: 2 }}
                                                         >
-                                                                Registrase
+                                                                Sign up
                                                         </Button>
                                                 </Box>
                                         </Box>
