@@ -44,6 +44,8 @@ export default function Detail() {
                 }
         }
 
+        const token = localStorage.getItem('atoken');
+
         //const [searchParams, setSearchParams] = useSearchParams();
         //const idIngresada = searchParams.get("id");
 
@@ -71,11 +73,10 @@ export default function Detail() {
                         <CssBaseline />
                         <AppBar position="relative">
                                 <Toolbar style={{ "display": "flex", "justifyContent": "space-around" }}>
-                                        <Button style={{ "color": "white" }} href="/Catalogo">Catalogo 📜</Button>
-                                        <Button style={{ "color": "white" }} href="/MisLibros">Mis libros 📚</Button>
-                                        <Button style={{ "color": "white" }} href="/MisPrestamos">Prestamos ♻️</Button>
-                                        <Button style={{ "color": "white" }} href="/">Salir 👋🏻</Button>
-
+                                        <Button style={{ "color": "white" }} href="/Catalogo">Catalog 📜</Button>
+                                        {token && <Button style={{ "color": "white" }} href="/MyBook">My Books 📚</Button>}
+                                        {token && <Button style={{ "color": "white" }} href="/MyLoans">My loans ♻️</Button>}
+                                        {token && <Button style={{ "color": "white" }} href="/">Logout 👋🏻</Button>}
                                 </Toolbar>
                         </AppBar>
                         <Box sx={{
@@ -87,7 +88,6 @@ export default function Detail() {
                                         <Typography component="h1" variant="h2" align="center" color="text.primary" gutterBottom>Book Detail</Typography>
                                 </Container>
                         </Box>
-                        {!bookDetail.book && <h1 style={{ textAlign: "center", position: '', backgroundColor: '#ff8c00' }}>¡ Unauthorized, please <a href="/">sign in!</a></h1>}
                         <Container sx={{ py: 8 }} maxWidth="md">
                                 {bookDetail.book && <Grid container spacing={4}>
                                         {bookDetail.book && <Grid>
@@ -124,8 +124,8 @@ export default function Detail() {
                                                                 </Typography>
                                                         </CardContent>
                                                         <CardActions>
-                                                                <Button onClick={() => { handleBorrow() }} color="success" size="large">Borrow</Button>
-                                                                <Button onClick={() => { handleReturn() }} color="error" size="large">Return</Button>
+                                                                {token && <Button onClick={() => { handleBorrow() }} color="success" size="large">Borrow</Button>}
+                                                                {token && <Button onClick={() => { handleReturn() }} color="error" size="large">Return</Button>}
                                                         </CardActions>
                                                 </Card>
                                         </Grid>
