@@ -83,12 +83,12 @@ export default function Catalogo() {
 
         const opcionesBusqueda = [
                 { value: "isbn", label: "ISBN" },
-                { value: "title", label: "Titulo" },
-                { value: "year", label: "Año" },
-                { value: "publisher", label: "Editorial" },
-                { value: "firstName", label: "Primer nombre del autor" },
-                { value: "genre", label: "Género" },
-                { value: "lastName", label: "Apellido del autor" },
+                { value: "title", label: "Title" },
+                { value: "year", label: "Year" },
+                { value: "publisher", label: "Publisher" },
+                { value: "firstName", label: "Author first name" },
+                { value: "genre", label: "Gender" },
+                { value: "lastName", label: "Author last name" },
         ]
 
         // const [cover, err, loadin] = useAxios({
@@ -123,10 +123,10 @@ export default function Catalogo() {
                         <CssBaseline />
                         {token && <AppBar position="relative">
                                 <Toolbar style={{ "display": "flex", "justifyContent": "space-around" }}>
-                                        <Button style={{ "color": "white" }} href="/Catalogo">Catalogo 📜</Button>
-                                        <Button style={{ "color": "white" }} href="/MisLibros">Mis libros 📚</Button>
-                                        <Button style={{ "color": "white" }} href="/MisPrestamos">Prestamos ♻️</Button>
-                                        <Button onClick={ clearToken } style={{ "color": "white" }} href="/">Salir 👋🏻</Button>
+                                        <Button style={{ "color": "white" }} href="/Catalog">Catalog 📜</Button>
+                                        <Button style={{ "color": "white" }} href="/MyBooks">My Books 📚</Button>
+                                        <Button style={{ "color": "white" }} href="/MyLoans">My loans ♻️</Button>
+                                        <Button onClick={ clearToken } style={{ "color": "white" }} href="/">Logout 👋🏻</Button>
 
                                 </Toolbar>
                         </AppBar>}
@@ -147,12 +147,12 @@ export default function Catalogo() {
                                                         color="text.primary"
                                                         gutterBottom
                                                 >
-                                                        Catálogo
+                                                        Catalog
                                                 </Typography>
                                                 <Box onSubmit={busquedaFiltrada} component='form'
                                                         style={{ "display": "block", "width": "100%", "alignItems": "center", "justifyContent": "space-around" }}>
                                                         <Select
-                                                                placeholder={"Seleccione uno..."}
+                                                                placeholder={"Select one..."}
                                                                 options={opcionesBusqueda}
                                                                 onChange={(item) => {
                                                                         setSelectedOptions(item.value);
@@ -168,12 +168,12 @@ export default function Catalogo() {
                                                                 required
                                                                 fullWidth
                                                                 id="filtro"
-                                                                label="filtro"
+                                                                label="filter"
                                                                 name="filtro"
                                                                 autoComplete="email"
                                                                 autoFocus
                                                         />
-                                                        <Button type='submit' variant='contained'>Buscar</Button>
+                                                        <Button type='submit' variant='contained'>Search</Button>
                                                 </Box>
                                         </Container>
                                 </Box>

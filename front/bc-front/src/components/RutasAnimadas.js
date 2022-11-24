@@ -38,7 +38,7 @@ export default function RutasAnimadas() {
                                         <SignIn />
                                 </motion.div>}>
                         </Route>
-                        <Route path='/MisPrestamos' element={
+                        <Route path='/MyLoans' element={
                                 <motion.div
                                         initial={{ y: 10, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
@@ -48,7 +48,7 @@ export default function RutasAnimadas() {
                                         <MisPrestamos />
                                 </motion.div>}>
                         </Route>
-                        <Route path='/MisLibros' element={
+                        <Route path='/MyBooks' element={
                                 <motion.div
                                         initial={{ y: 10, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
@@ -58,7 +58,7 @@ export default function RutasAnimadas() {
                                         <MisLibros />
                                 </motion.div>}>
                         </Route>
-                        <Route path='/Catalogo' element={
+                        <Route path='/Catalog' element={
                                 <motion.div
                                         initial={{ y: 10, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
