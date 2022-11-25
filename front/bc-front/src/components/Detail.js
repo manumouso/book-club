@@ -91,7 +91,7 @@ export default function Detail() {
                         <AppBar position="relative">
                                 <Toolbar style={{ "display": "flex", "justifyContent": "space-around" }}>
                                         <Button style={{ "color": "white" }} href="/Catalog">Catalog 📜</Button>
-                                        {token && <Button style={{ "color": "white" }} href="/MyBook">My Books 📚</Button>}
+                                        {token && <Button style={{ "color": "white" }} href="/MyBooks">My Books 📚</Button>}
                                         {token && <Button style={{ "color": "white" }} href="/MyLoans">My loans ♻️</Button>}
                                         {token && <Button style={{ "color": "white" }} href="/">Logout 👋🏻</Button>}
                                 </Toolbar>
