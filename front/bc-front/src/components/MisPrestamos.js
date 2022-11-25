@@ -14,6 +14,7 @@ import useAxios from '../hooks/useAxios';
 import axios from '../apis/private'
 import { Navigate, useNavigate } from "react-router-dom";
 import PrivateToolBar from './PrivateToolBar';
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 
 
 const cards = [45];
@@ -64,7 +65,7 @@ export default function MisPrestamos() {
                                                         gutterBottom>My borrows</Typography>
                                         </Container>
                                 </Box>
-                                {!books.myBorrows && <h1 className='unAuthorized'>¡ Unauthorized, please <a href="/">sign in!</a></h1>}
+                                {!books.myBorrows && <h1 className='unAuthorized'><DoNotDisturbIcon fontSize='large' /><div > UNAUTHORIZED, Please <a href="/">Sign In</a>!</div> <DoNotDisturbIcon fontSize='large' /></h1>}
                                 <Container sx={{ py: 8 }} maxWidth="md">
                                         {/* End hero unit */}
                                         {books.myBorrows && <Grid container spacing={4}>

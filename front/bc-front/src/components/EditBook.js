@@ -7,6 +7,7 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 
 const EditBook = () => {
 
@@ -88,7 +89,7 @@ const EditBook = () => {
         }
         return (
                 <div className="bookCardStyle">
-                        {!bookDetail.book && <h1 className="unAuthorized">¡ Unauthorized, please <a href="/">sign in!</a></h1>}
+                        {!bookDetail.book && <h1 className='unAuthorized'><DoNotDisturbIcon fontSize='large' /><div > UNAUTHORIZED, Please <a href="/">Sign In</a>!</div> <DoNotDisturbIcon fontSize='large' /></h1>}
                         {bookDetail.book && <div>
                                 <Card sx={{
                                         width: 550,
