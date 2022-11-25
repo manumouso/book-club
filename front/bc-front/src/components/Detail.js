@@ -9,6 +9,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import { useSearchParams } from "react-router-dom";
 import { AppBar, Box, Button, CssBaseline, Grid, Toolbar } from '@mui/material';
+import { Navigate, useNavigate } from "react-router-dom";
 import PrivateToolBar from './PrivateToolBar';
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import styles from "../styles.css";
@@ -18,6 +19,8 @@ const theme = createTheme();
 export default function Detail() {
         const [searchParams, setSearchParams] = useSearchParams();
         const idIngresada = searchParams.get("id");
+
+        const navigate = useNavigate();
 
         async function handleBorrow() {
                 try {
@@ -29,7 +32,14 @@ export default function Detail() {
                         })
                         alert('Book borrowed. BookId: ' + borrowedBookId.data.borrowedBookId)
                 } catch (error) {
-                        alert(error.response.data.message);
+                        if (error.response.status === 401)
+                        {
+                                navigate(`/Unauthorized`)
+                        }
+                        else
+                        {
+                                alert(error.response.data.message) /// VA BIEN PARA TODOS LOS ERRORES
+                        }
                 }
         }
 
@@ -43,10 +53,25 @@ export default function Detail() {
                         })
                         alert('Book returned. BookId: ' + returnedBook.data.returnedBookId)
                 } catch (error) {
-                        alert(error.response.data.message)
+                        if (error.response.status === 401)
+                        {
+                                navigate(`/Unauthorized`)
+                        }
+                        else
+                        {
+                                alert(error.response.data.message) /// VA BIEN PARA TODOS LOS ERRORES
+                        }
                 }
         }
 
+        const token = localStorage.getItem('atoken');
+
+        //const [searchParams, setSearchParams] = useSearchParams();
+        //const idIngresada = searchParams.get("id");
+
+        // hacer el ?{blabla} magico de Maxi
+
+        //`http://localhost:3333/books/details/${idIngresada}`
         const [bookDetail, error, loading] = useAxios({
                 axiosInstance: axios,
                 method: 'GET',

@@ -90,6 +90,11 @@ export default function MisLibros(props) {
 
         }
 
+        function clearToken()
+        {
+                localStorage.removeItem('atoken');
+        }
+
         return (
                 <ThemeProvider theme={theme}>
                         <CssBaseline />
@@ -110,7 +115,7 @@ export default function MisLibros(props) {
                                                         color="text.primary"
                                                         gutterBottom
                                                 >
-                                                        Mis Libros
+                                                        My books
                                                 </Typography>
                                         </Container>
                                 </Box>

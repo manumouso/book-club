@@ -97,15 +97,20 @@ export default function Catalogo() {
 
         const opcionesBusqueda = [
                 { value: "isbn", label: "ISBN" },
-                { value: "title", label: "Titulo" },
-                { value: "year", label: "Año" },
-                { value: "publisher", label: "Editorial" },
-                { value: "firstName", label: "Primer nombre del autor" },
-                { value: "genre", label: "Género" },
-                { value: "lastName", label: "Apellido del autor" },
+                { value: "title", label: "Title" },
+                { value: "year", label: "Year" },
+                { value: "publisher", label: "Publisher" },
+                { value: "firstName", label: "Author first name" },
+                { value: "genre", label: "Genre" },
+                { value: "lastName", label: "Author last name" },
         ]
 
         const token = localStorage.getItem('atoken')
+
+        function clearToken()
+        {
+                localStorage.removeItem('atoken');
+        }
 
         return (
                 <ThemeProvider theme={theme}>
@@ -129,12 +134,12 @@ export default function Catalogo() {
                                                         color="text.primary"
                                                         gutterBottom
                                                 >
-                                                        Catálogo
+                                                        Catalog
                                                 </Typography>
                                                 <Box onSubmit={busquedaFiltrada} component='form'
                                                         className='filteredSearch'>
                                                         <Select
-                                                                placeholder={"Seleccione uno..."}
+                                                                placeholder={"Select one..."}
                                                                 options={opcionesBusqueda}
                                                                 onChange={(item) => {
                                                                         setSelectedOptions(item.value);
@@ -150,13 +155,13 @@ export default function Catalogo() {
                                                                 required
                                                                 fullWidth
                                                                 id="filtro"
-                                                                label="filtro"
+                                                                label="filter"
                                                                 name="filtro"
                                                                 autoComplete="email"
                                                                 autoFocus
                                                         />
-                                                        <Button type='submit' variant='contained'>Buscar</Button>
-                                                        <Button type='button' variant='contained' color='secondary' onClick={resetearFiltros}>Borrar filtros</Button>
+                                                        <Button type='submit' variant='contained'>Search</Button>
+                                                        <Button type='button' variant='contained' color='secondary' onClick={resetearFiltros}>Delete filters</Button>
                                                 </Box>
                                         </Container>
                                 </Box>
