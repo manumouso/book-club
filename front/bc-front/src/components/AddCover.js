@@ -18,14 +18,13 @@ const AddCover = () => {
                 const formData = new FormData();
                 formData.append("file", data.file[0]);
 
-
                 try {
                         const resp = await axios.post(`http://localhost:3333/covers/${idIngresada}`, formData, { headers: { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${localStorage.getItem('atoken')}` } });
                         if (resp.status === 201) return (
                                 navigate('/MisLibros')
                         )
                 } catch (error) {
-                        console.log(error);
+                        alert(error.response.data.message);
                 }
         }
 
@@ -41,11 +40,8 @@ const AddCover = () => {
                                         })} />
                                 </div>
                                 <input type="submit" value='Upload' />
-                                {/* <input type="submit" value='Not now' /> */}
-
                         </form>
                 </div>
         )
 }
-
 export default AddCover

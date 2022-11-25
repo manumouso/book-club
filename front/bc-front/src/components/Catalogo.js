@@ -83,7 +83,6 @@ export default function Catalogo() {
                                         'Authorization': `Bearer ${localStorage.getItem('atoken')}`
                                 }
                         })
-                        console.log(librosPresentados)
                         setLibrosPresentados(filteredBooks.data)
                         setMostrarFiltrados(true)
                 } catch (error) {
@@ -93,7 +92,6 @@ export default function Catalogo() {
 
         const resetearFiltros = () => {
                 setMostrarFiltrados(false)
-                console.log(books)
         }
 
         const opcionesBusqueda = [
