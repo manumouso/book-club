@@ -90,14 +90,14 @@ $ yarn start:dev
       Request: Query: { filter, value }
 
       Response: { books }
-
-  - Authorization ---> Request: Header: { Authorization: Bearer access_token }
-
+      
     - GET /books/details/:bookId
 
       Request: Param: { bookId }
 
       Response: { book }
+
+  - Authorization ---> Request: Header: { Authorization: Bearer access_token }
 
     - GET /books/me
 
