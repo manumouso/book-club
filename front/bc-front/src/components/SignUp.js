@@ -17,6 +17,7 @@ import useAxios from '../hooks/useAxios';
 import axios from "../apis/private"
 import { useState } from 'react';
 import { Route, withRouter, useNavigate } from 'react-router-dom';
+import PopUpMejor from './PopUpMejor';
 
 const theme = createTheme();
 
@@ -27,6 +28,11 @@ export default function SignUp(props) {
         const [username, setUsername] = useState('')
         const [password, setPassword] = useState('')
         const [user, setUser] = useState(null)
+        const [cartelError, setCartelError] = React.useState(false)
+        const [errorMessage, setErrorMessage] = useState(null)
+        const cerrarCartel = () => {
+                setCartelError(false);
+        }
 
 
         function redirectHomePage() {
@@ -61,7 +67,8 @@ export default function SignUp(props) {
                         redirectHomePage()
 
                 } catch (e) {
-                        alert(e.response.data.message)
+                        setErrorMessage(e.response.data.message[0]);
+                        setCartelError(true)
                 }
 
         };
@@ -69,6 +76,7 @@ export default function SignUp(props) {
 
         return (
                 <ThemeProvider theme={theme}>
+                        <PopUpMejor mostrar={cartelError} cerrar={cerrarCartel} aviso={errorMessage}/>
                         <Grid container component="main" sx={{ height: '100vh' }}>
                                 <CssBaseline />
                                 <Grid
