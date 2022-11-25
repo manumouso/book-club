@@ -71,7 +71,7 @@ const NewBookForm = () => {
                                 <div>
                                         <label>Synopsis: </label>
                                         <input type="text" {...register('synopsis', {
-                                                required: true,
+                                                required: false,
                                                 maxLength: 200
                                         })} />
                                 </div>
@@ -109,12 +109,13 @@ const NewBookForm = () => {
                                                 maxLength: 60
                                         })} />
                                 </div>
+                                <br />
+                                <br />
+                                <br />
                                 <input type="submit" value='Submit' />
 
                         </form>
-                        <br />
-                        <br />
-                        <br />
+
 
                 </div>
         )
