@@ -169,7 +169,7 @@ export default function Catalogo() {
                                                                 autoFocus
                                                         />
                                                         <Button type='submit' variant='contained'>Search</Button>
-                                                        <Button type='button' variant='contained' color='secondary' onClick={resetearFiltros}>Borrar filtros</Button>
+                                                        <Button type='button' variant='contained' color='secondary' onClick={resetearFiltros}>Delete filters</Button>
                                                 </Box>
                                         </Container>
                                 </Box>
