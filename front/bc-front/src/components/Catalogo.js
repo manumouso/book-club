@@ -47,6 +47,7 @@ export default function Catalogo() {
         const [librosPresentados, setLibrosPresentados] = React.useState()
         const [mostrarFiltados, setMostrarFiltrados] = React.useState(false)
         const [cartelError, setCartelError] = React.useState(false)
+        const [cartelMessage, setCartelMessage] = React.useState(false)
         const cerrarCartel = () => {
                 setCartelError(false);
         }
@@ -86,13 +87,13 @@ export default function Catalogo() {
                         setLibrosPresentados(filteredBooks.data)
                         setMostrarFiltrados(true)
                 } catch (error) {
-                        alert(error.response.data.message)
+                        setCartelMessage(error.response.data.message);
+                        setCartelError(true)
                 }
         }
 
         const resetearFiltros = () => {
                 setMostrarFiltrados(false)
-                setCartelError(true)
         }
 
         const opcionesBusqueda = [
@@ -114,7 +115,7 @@ export default function Catalogo() {
 
         return (
                 <ThemeProvider theme={theme}>
-                        <PopUpMejor mostrar={cartelError} cerrar={cerrarCartel} aviso={""}/>
+                        <PopUpMejor mostrar={cartelError} cerrar={cerrarCartel} aviso={cartelMessage}/>
                         <CssBaseline />
                         <PrivateToolBar />
                         <main>
