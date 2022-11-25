@@ -116,7 +116,7 @@ export default function Catalogo() {
                 <ThemeProvider theme={theme}>
                         <PopUpMejor mostrar={cartelError} cerrar={cerrarCartel} aviso={""}/>
                         <CssBaseline />
-                        {token && <PrivateToolBar />}
+                        <PrivateToolBar />
                         <main>
                                 {/* Hero unit */}
                                 <Box
