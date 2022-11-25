@@ -61,7 +61,6 @@ export default function Detail() {
                 }
         }
 
-<<<<<<< HEAD
         const token = localStorage.getItem('atoken');
 
         //const [searchParams, setSearchParams] = useSearchParams();
@@ -70,8 +69,6 @@ export default function Detail() {
         // hacer el ?{blabla} magico de Maxi
 
         //`http://localhost:3333/books/details/${idIngresada}`
-=======
->>>>>>> ff0004ef76fb2586d9f0f7c65e7032d832ed0a50
         const [bookDetail, error, loading] = useAxios({
                 axiosInstance: axios,
                 method: 'GET',
