@@ -7,17 +7,18 @@ import CardMedia from '@mui/material/CardMedia';
 import useAxios from '../hooks/useAxios';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
-//import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { AppBar, Box, Button, CssBaseline, Grid, Toolbar } from '@mui/material';
 
 const theme = createTheme();
 
 export default function Detail() {
+        const [searchParams, setSearchParams] = useSearchParams();
+        const idIngresada = searchParams.get("id");
 
         async function handleBorrow() {
                 try {
-                        //`http://localhost:3333/users/me/borrows/${idIngresada}`
-                        const borrowedBookId = await axios.patch('http://localhost:3333/users/me/borrows/7', {}, {
+                        const borrowedBookId = await axios.patch(`http://localhost:3333/users/me/borrows/${idIngresada}`, {}, {
                                 headers: {
                                         'Content-Language': 'en-US',
                                         Authorization: `Bearer ${localStorage.getItem('atoken')}`,
@@ -31,8 +32,7 @@ export default function Detail() {
 
         async function handleReturn() {
                 try {
-                        //`http://localhost:3333/users/me/borrows/${idIngresada}`
-                        const returnedBook = await axios.patch('http://localhost:3333/users/me/returns/7', {}, {
+                        const returnedBook = await axios.patch(`http://localhost:3333/users/me/returns/${idIngresada}`, {}, {
                                 headers: {
                                         'Content-Language': 'en-US',
                                         Authorization: `Bearer ${localStorage.getItem('atoken')}`,
@@ -44,16 +44,10 @@ export default function Detail() {
                 }
         }
 
-        //const [searchParams, setSearchParams] = useSearchParams();
-        //const idIngresada = searchParams.get("id");
-
-        // hacer el ?{blabla} magico de Maxi
-
-        //`http://localhost:3333/books/details/${idIngresada}`
         const [bookDetail, error, loading] = useAxios({
                 axiosInstance: axios,
                 method: 'GET',
-                url: 'http://localhost:3333/books/details/2',
+                url: `http://localhost:3333/books/details/${idIngresada}`,
                 requestConfig: {
                         headers: {
                                 'Content-Language': 'en-US',

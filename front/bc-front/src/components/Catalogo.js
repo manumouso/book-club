@@ -29,6 +29,7 @@ async function getAmount() {
         const cards = await axios1.get('http://localhost:3333/books/amount')
 }
 
+// ToDo usar esta fun p ver detalle de foto
 async function getCover(bookId) {
         return await axios1.get('http://localhost:3333/covers/' + bookId, { headers: { 'Content-Type': 'image/png' } }).then(covers => {
                 return Promise.resolve(covers);
@@ -46,6 +47,9 @@ export default function Catalogo() {
                         navigate(`/Details/?id=${a.id}`)
                 )
         }
+
+        const [librosPresentados, setLibrosPresentados] = React.useState()
+        const [mostrarFiltados, setMostrarFiltrados] = React.useState(false)
 
         //ToDo usar amount para el paginado
         const amount = getAmount()
@@ -72,13 +76,24 @@ export default function Catalogo() {
                 const data = new FormData(event.currentTarget);
                 const filter = data.get('filtro')
 
-                const filteredBooks = await axios1(`http://localhost:3333/books/filterBy?filter=${SelectedOption}&value=${filter}`, {
-                        headers: {
-                                'Content-Language': 'en-US',
-                                'Authorization': `Bearer ${localStorage.getItem('atoken')}`
-                        }
-                })
-                console.log(filteredBooks)
+                try {
+                        const filteredBooks = await axios1(`http://localhost:3333/books/filterBy?filter=${SelectedOption}&value=${filter}`, {
+                                headers: {
+                                        'Content-Language': 'en-US',
+                                        'Authorization': `Bearer ${localStorage.getItem('atoken')}`
+                                }
+                        })
+                        console.log(librosPresentados)
+                        setLibrosPresentados(filteredBooks.data)
+                        setMostrarFiltrados(true)
+                } catch (error) {
+                        alert(error.response.data.message)
+                }
+        }
+
+        const resetearFiltros = () => {
+                setMostrarFiltrados(false)
+                console.log(books)
         }
 
         const opcionesBusqueda = [
@@ -90,26 +105,6 @@ export default function Catalogo() {
                 { value: "genre", label: "Género" },
                 { value: "lastName", label: "Apellido del autor" },
         ]
-
-        // const [cover, err, loadin] = useAxios({
-        //         axiosInstance: axios,
-        //         method: 'GET',
-        //         url: `http://localhost:3333/covers/${books}`,
-        //         requestConfig: {
-        //                 headers: {
-        //                         'Content-Language': 'en-US',
-        //                 },
-        //                 data: {
-
-        //                 }
-        //         }
-        // })
-
-
-
-
-        // let coverImage = getCover(33)
-        // console.log(coverImage)
 
         const token = localStorage.getItem('atoken')
 
@@ -169,14 +164,14 @@ export default function Catalogo() {
                                                                 autoFocus
                                                         />
                                                         <Button type='submit' variant='contained'>Buscar</Button>
+                                                        <Button type='button' variant='contained' color='secondary' onClick={resetearFiltros}>Borrar filtros</Button>
                                                 </Box>
                                         </Container>
                                 </Box>
                                 <Container sx={{ py: 8 }} maxWidth="md">
-                                        {/* End hero unit */}
-                                        {books.books && <Grid container spacing={4}>
+                                        {!mostrarFiltados && books.books && <Grid container spacing={4}>
                                                 {books.books.map((card) => (
-                                                        <Grid item key={card} xs={12} sm={6} md={4}>
+                                                        <Grid item key={card.id} xs={12} sm={6} md={4}>
                                                                 <Card
                                                                         sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                                                                 ><Typography id={card.id} gutterBottom variant="h6" component="h2">
@@ -189,6 +184,46 @@ export default function Catalogo() {
                                                                         <CardMedia
                                                                                 component="img"
                                                                                 sx={{
+                                                                                        pt: '20px',
+                                                                                }}
+                                                                                image={`http://localhost:3333/covers/${card.id}`}
+                                                                                alt="random"
+                                                                        />
+                                                                        <CardContent sx={{ flexGrow: 1 }}>
+                                                                                <Typography>
+                                                                                        Author: {card.author.lastName}
+                                                                                </Typography>
+                                                                                <Typography>
+                                                                                        Year: {card.year}
+                                                                                </Typography>
+                                                                                <Typography>
+                                                                                        Publisher: {card.publisher}
+                                                                                </Typography>
+                                                                                <Typography>
+                                                                                        Genre: {card.genre.name}
+                                                                                </Typography>
+                                                                        </CardContent>
+                                                                        <CardActions>
+                                                                                <Button onClick={() => { viewDetail(card.id) }} size="small">View Details</Button>
+                                                                        </CardActions>
+                                                                </Card>
+                                                        </Grid>
+                                                ))}
+                                        </Grid>}
+                                        {mostrarFiltados && librosPresentados && <Grid container spacing={4}>
+                                                {librosPresentados.books.map((card) => (
+                                                        <Grid item key={card.id} xs={12} sm={6} md={4}>
+                                                                <Card
+                                                                        sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+                                                                ><Typography id={card.id} gutterBottom variant="h6" component="h2">
+                                                                                {card.id}
+                                                                        </Typography>
+                                                                        <Typography gutterBottom variant="h5" component="h2">
+                                                                                {card.title}
+                                                                        </Typography>
+                                                                        <CardMedia
+                                                                                component="img"
+                                                                                sx={{
                                                                                         // 16:9
                                                                                         pt: '20px',
                                                                                 }}
@@ -196,9 +231,6 @@ export default function Catalogo() {
                                                                                 alt="random"
                                                                         />
                                                                         <CardContent sx={{ flexGrow: 1 }}>
-                                                                                {/* <Typography gutterBottom variant="h5" component="h2">
-                      Heading
-                    </Typography> */}
                                                                                 <Typography>
                                                                                         Author: {card.author.lastName}
                                                                                 </Typography>
@@ -221,21 +253,6 @@ export default function Catalogo() {
                                         </Grid>}
                                 </Container>
                         </main>
-                        {/* Footer */}
-                        {/* <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          color="text.secondary"
-          component="p"
-        >
-          cosas de footer
-        </Typography>
-      </Box> */}
-                        {/* End footer */}
                 </ThemeProvider>
         );
 }
