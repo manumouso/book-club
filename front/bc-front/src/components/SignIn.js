@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert'
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -23,6 +24,7 @@ const theme = createTheme();
 export default function SignIn(props) {
 
         const navigate = useNavigate();
+        let errorMessage = null;
 
         const [username, setUsername] = useState('')
         const [password, setPassword] = useState('')
@@ -62,6 +64,7 @@ export default function SignIn(props) {
 
                 } catch (e) {
                         alert('Wrong username or password')
+                        errorMessage = 'Wrong username or password';
                 }
 
         };
@@ -101,6 +104,8 @@ export default function SignIn(props) {
                                                 <Typography component="h1" variant="h5">
                                                         Sign in
                                                 </Typography>
+                                                {errorMessage && <br></br>}
+                                                {errorMessage && <Alert id="error_alert" severity="error">{errorMessage}</Alert>}
                                                 <Box
                                                         component="form"
                                                         noValidate
@@ -154,7 +159,7 @@ export default function SignIn(props) {
                                                                 fullWidth
                                                                 variant="contained"
                                                                 style={{ backgroundColor: '#ef9a9a' }}
-                                                                href='/'
+                                                                href='/SignUp'
                                                                 sx={{ mt: 3, mb: 2 }}
                                                         >
                                                                 Sign up
