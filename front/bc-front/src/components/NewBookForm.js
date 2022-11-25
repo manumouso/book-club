@@ -5,12 +5,24 @@ import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
+import useAxios from '../hooks/useAxios';
 import styles from '../styles.css'
 
 const NewBookForm = () => {
 
         const { register, handleSubmit } = useForm();
         const navigate = useNavigate();
+
+        const getAuthors = async () => {
+                try {
+                        const resp = await axios.get('http://localhost:3333/authors')
+
+                } catch (error) {
+                        console.log(error.data.response);
+                }
+        }
+
+        const authors = getAuthors()
 
         const onSubmit = async (data) => {
 
@@ -90,6 +102,18 @@ const NewBookForm = () => {
                                                                         <input type="text" {...register('isbn', {
                                                                                 required: true,
                                                                         })} />
+                                                                </div>
+                                                                <div>
+                                                                        <label for="cars">Choose an author:</label>
+                                                                        <select name="cars" id="cars">
+                                                                                <option value="volvo">maxi</option>
+                                                                        </select>
+                                                                </div>
+                                                                <div>
+                                                                        <label for="cars">Choose a genre:</label>
+                                                                        <select name="cars" id="cars">
+                                                                                <option value="volvo">maxi</option>
+                                                                        </select>
                                                                 </div>
                                                                 <div>
                                                                         <label>AuthorId: </label>

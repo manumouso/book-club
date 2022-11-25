@@ -119,7 +119,7 @@ export default function MisLibros(props) {
                                         {books.myBooks && <Button href="/createBook" sx={{ display: 'flex', justifyContent: 'space-between', width: '19%', '& button': { m: 1 } }} size="large" variant="contained"><AddCircleOutlineIcon />New Book</Button>}
 
                                         {/* End hero unit */}
-                                        {books.myBooks && <h1 style={{ "textAlign": "center" }}>Books Borrowed From Me</h1>}
+                                        {books.myBooks && <h1 style={{ "textAlign": "center" }}>My Books That Have Been Borrowed</h1>}
 
                                         {books.myBooks && <Grid container spacing={4}> {books.myBooks.booksBorrowedFromMe.map((card) => (<Grid item key={card} xs={12} sm={6} md={4}><Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                                                 <Typography gutterBottom id={card.id} variant="h5" component="h5">
@@ -163,7 +163,7 @@ export default function MisLibros(props) {
                                         </Grid>
                                         ))}
                                         </Grid>}
-                                        {books.myBooks && <h1 style={{ "textAlign": "center" }}>My available books</h1>}
+                                        {books.myBooks && <h1 style={{ "textAlign": "center" }}>My Available Books</h1>}
                                         {books.myBooks && <Grid container spacing={4}> {books.myBooks.availableBooks.map((card) => (<Grid item key={card} xs={12} sm={6} md={4}><Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                                                 <Typography gutterBottom id={card.id} variant="h5" component="h5">
                                                         {card.id}

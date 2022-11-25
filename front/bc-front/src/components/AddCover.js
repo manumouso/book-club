@@ -56,7 +56,7 @@ const AddCover = () => {
                                                                 })} />
                                                         </div>
                                                         <br /><br />
-                                                        <input type="submit" value='Upload' />
+                                                        <input className="buttonsCustom" type="submit" value='Upload' />
                                                 </form>
 
                                         </CardContent>

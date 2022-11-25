@@ -50,3 +50,9 @@
 .synopsisClass > textarea {
         resize: none;
 }
+
+.css-10m0cap {
+        background-color: #fff;
+        padding-top: 64px;
+        padding-bottom: 0px !important
+}

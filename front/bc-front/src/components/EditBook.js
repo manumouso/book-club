@@ -61,7 +61,7 @@ const EditBook = () => {
                 let ob = {}
 
                 for (let index = 0; index < 8; index++) {
-                        if (a[index] != b[index] && a[index] !== '') {
+                        if (a[index] != b[index]) {
                                 Object.defineProperty(ob, d[index][0], {
                                         value: d[index][1], writable: true,
                                         enumerable: true, configurable: true
