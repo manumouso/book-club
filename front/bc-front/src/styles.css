@@ -1,7 +1,19 @@
 .bookCardStyle {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
         height: 100vh;
         text-align: center;
         background-image: url('https://64.media.tumblr.com/1f22fb16eaa607a10f72a17a85cd3e74/tumblr_ohwrn5vqLj1sta38no1_1280.jpg');
+}
+
+.formCustom {
+        display: flex;
+        flex-direction: column;
+        height: 36vh;
+        align-items: center;
+        justify-content: space-evenly;
 }
 
 .unAuthorized {
@@ -15,4 +27,22 @@
         width: 100%;
         align-items: center;
         justify-content: space-around;
+}
+
+.buttonsCustom {
+        background-color: #67B9F1;
+        border-radius: 8px;
+        cursor: pointer;
+        width: 6vw;
+        height: 3vh;
+}
+
+.synopsisClass{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+}
+
+.synopsisClass > textarea {
+        resize: none;
 }

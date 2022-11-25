@@ -10,6 +10,7 @@ import NewBookForm from './NewBookForm';
 import AddCover from './AddCover';
 import Detail from './Detail';
 import EditBook from './EditBook';
+import EditCover from './EditCover';
 
 
 export default function RutasAnimadas() {
@@ -106,6 +107,16 @@ export default function RutasAnimadas() {
                                         transition={{ duration: 0.8 }}
                                         className='lobby'>
                                         <EditBook />
+                                </motion.div>}>
+                        </Route>
+                        <Route path='/EditCover' element={
+                                <motion.div
+                                        initial={{ y: 10, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        exit={{ y: -10, opacity: 0 }}
+                                        transition={{ duration: 0.8 }}
+                                        className='lobby'>
+                                        <EditCover />
                                 </motion.div>}>
                         </Route>
                 </Routes>

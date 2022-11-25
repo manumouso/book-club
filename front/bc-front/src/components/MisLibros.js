@@ -16,6 +16,8 @@ import { Navigate, useNavigate } from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import PrivateToolBar from './PrivateToolBar';
+import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -55,6 +57,12 @@ export default function MisLibros(props) {
                 }
         }
 
+        const editCover = async (id) => {
+                let a = document.getElementById(id)
+                return (
+                        navigate(`/EditCover/?id=${a.id}`)
+                )
+        }
 
         const editBook = async (id) => {
                 let a = document.getElementById(id)
@@ -108,7 +116,7 @@ export default function MisLibros(props) {
                                 </Box>
                                 {!books.myBooks && <h1 className='unAuthorized'>¡ Unauthorized, please <a href="/">sign in!</a></h1>}
                                 <Container sx={{ py: 8 }} maxWidth="md">
-                                        {books.myBooks && <Button href="/createBook" style={{ backgroundColor: 'silver', }}>➕ Add New Book </Button>}
+                                        {books.myBooks && <Button href="/createBook" sx={{ display: 'flex', justifyContent: 'space-between', width: '19%', '& button': { m: 1 } }} size="large" variant="contained"><AddCircleOutlineIcon />New Book</Button>}
 
                                         {/* End hero unit */}
                                         {books.myBooks && <h1 style={{ "textAlign": "center" }}>Books Borrowed From Me</h1>}
@@ -147,6 +155,7 @@ export default function MisLibros(props) {
                                                 <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                                         <Button onClick={() => { viewDetail(card.id) }} size="small">View Details</Button>
                                                         <EditIcon onClick={() => { editBook(card.id) }} cursor='pointer' ></EditIcon>
+                                                        <InsertPhotoIcon cursor='pointer' onClick={() => { editCover(card.id) }} />
                                                         <DeleteIcon cursor='pointer' onClick={() => { deleteBook(card.id) }} color='error'></DeleteIcon>
 
                                                 </CardActions>
@@ -184,6 +193,7 @@ export default function MisLibros(props) {
                                                 <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                                         <Button onClick={() => { viewDetail(card.id) }} size="small">View Details</Button>
                                                         <EditIcon cursor='pointer' onClick={() => { editBook(card.id) }} ></EditIcon>
+                                                        <InsertPhotoIcon cursor='pointer' onClick={() => { editCover(card.id) }} />
                                                         <DeleteIcon cursor='pointer' onClick={() => { deleteBook(card.id) }} color='error'></DeleteIcon>
                                                 </CardActions>
                                         </Card>

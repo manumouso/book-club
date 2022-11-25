@@ -9,8 +9,7 @@ import Button from '@mui/material/Button';
 import styles from '../styles.css'
 
 
-
-const AddCover = () => {
+const EditCover = () => {
 
         const { register, handleSubmit } = useForm();
         const navigate = useNavigate();
@@ -19,13 +18,13 @@ const AddCover = () => {
         const idIngresada = searchParams.get("id");
 
         const onSubmit = async (data) => {
-
                 const formData = new FormData();
                 formData.append("file", data.file[0]);
 
                 try {
-                        const resp = await axios.post(`http://localhost:3333/covers/${idIngresada}`, formData, { headers: { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${localStorage.getItem('atoken')}` } });
-                        if (resp.status === 201) return (
+                        const resp = await axios.patch(`http://localhost:3333/covers/${idIngresada}`, formData, { headers: { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${localStorage.getItem('atoken')}` } });
+                        console.log(resp)
+                        if (resp.status === 200) return (
                                 navigate('/MisLibros')
                         )
                 } catch (error) {
@@ -44,7 +43,7 @@ const AddCover = () => {
                                 }}>
                                         <CardContent >
                                                 <br />
-                                                <h2>Do you want to add a cover image? 🖼️</h2>
+                                                <h2>Do you want to change cover image? 🖼️</h2>
                                                 <br />
                                                 <h3>Please upload 👇</h3>
                                                 <br />
@@ -56,9 +55,8 @@ const AddCover = () => {
                                                                 })} />
                                                         </div>
                                                         <br /><br />
-                                                        <input type="submit" value='Upload' />
+                                                        <input className="buttonsCustom" type="submit" value='Upload' />
                                                 </form>
-
                                         </CardContent>
                                         <CardActions>
                                                 <Button href="/MisLibros" size="small">Back to my books</Button>
@@ -68,4 +66,4 @@ const AddCover = () => {
                 </div>
         )
 }
-export default AddCover
+export default EditCover
