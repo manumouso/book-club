@@ -1,23 +1,20 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
-import CameraIcon from '@mui/icons-material/PhotoCamera';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import useAxios from '../hooks/useAxios';
 import axios from '../apis/private'
 import { Navigate, useNavigate } from "react-router-dom";
+import PrivateToolBar from './PrivateToolBar';
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 
 
 const cards = [45];
@@ -57,35 +54,22 @@ export default function MisPrestamos() {
         return (
                 <ThemeProvider theme={theme}>
                         <CssBaseline />
-                        <AppBar position="relative">
-                                <Toolbar style={{ "display": "flex", "justifyContent": "space-around" }}>
-                                        <Button style={{ "color": "white" }} href="/Catalog">Catalog 📜</Button>
-                                        <Button style={{ "color": "white" }} href="/MyBooks">My Books 📚</Button>
-                                        <Button style={{ "color": "white" }} href="/MyLoans">My loans ♻️</Button>
-                                        <Button onClick={ clearToken } style={{ "color": "white" }} href="/">Logout 👋🏻</Button>
-                                </Toolbar>
-                        </AppBar>
+                        <PrivateToolBar />
                         <main>
-                                {/* Hero unit */}
-                                <Box
-                                        sx={{
-                                                bgcolor: 'background.paper',
-                                                pt: 8,
-                                                pb: 6,
-                                        }}
-                                >
+                                <Box sx={{
+                                        bgcolor: 'background.paper',
+                                        pt: 8,
+                                        pb: 6,
+                                }}>
                                         <Container maxWidth="sm">
-                                                <Typography
-                                                        component="h1"
+                                                <Typography component="h1"
                                                         variant="h2"
                                                         align="center"
                                                         color="text.primary"
-                                                        gutterBottom
-                                                >
-                                                        My borrows
-                                                </Typography>
+                                                        gutterBottom>My borrows</Typography>
                                         </Container>
                                 </Box>
+                                {!books.myBorrows && <h1 className='unAuthorized'><DoNotDisturbIcon fontSize='large' /><div > UNAUTHORIZED, Please <a href="/">Sign In</a>!</div> <DoNotDisturbIcon fontSize='large' /></h1>}
                                 <Container sx={{ py: 8 }} maxWidth="md">
                                         {/* End hero unit */}
                                         {books.myBorrows && <Grid container spacing={4}>
@@ -110,9 +94,6 @@ export default function MisPrestamos() {
                                                                                 alt="random"
                                                                         />
                                                                         <CardContent sx={{ flexGrow: 1 }}>
-                                                                                {/* <Typography gutterBottom variant="h5" component="h2">
-                      Heading
-                    </Typography> */}
                                                                                 <Typography>
                                                                                         Author: {card.author.lastName}
                                                                                 </Typography>
@@ -132,21 +113,6 @@ export default function MisPrestamos() {
                                         </Grid>}
                                 </Container>
                         </main>
-                        {/* Footer */}
-                        {/* <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          color="text.secondary"
-          component="p"
-        >
-          cosas de footer
-        </Typography>
-      </Box> */}
-                        {/* End footer */}
                 </ThemeProvider>
         );
 }

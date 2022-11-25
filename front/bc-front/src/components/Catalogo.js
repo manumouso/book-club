@@ -1,27 +1,23 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
-import CameraIcon from '@mui/icons-material/PhotoCamera';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import useAxios from '../hooks/useAxios';
 import axios from '../apis/private'
 import axios1 from 'axios'
 import Select from 'react-select';
 import { TextField } from '@mui/material';
-import { useForm } from "react-hook-form";
 import { Navigate, useNavigate } from "react-router-dom";
+import PrivateToolBar from './PrivateToolBar';
+import PopUpMejor from './PopUpMejor';
 
 const theme = createTheme();
 
@@ -50,6 +46,10 @@ export default function Catalogo() {
 
         const [librosPresentados, setLibrosPresentados] = React.useState()
         const [mostrarFiltados, setMostrarFiltrados] = React.useState(false)
+        const [cartelError, setCartelError] = React.useState(false)
+        const cerrarCartel = () => {
+                setCartelError(false);
+        }
 
         //ToDo usar amount para el paginado
         const amount = getAmount()
@@ -83,7 +83,6 @@ export default function Catalogo() {
                                         'Authorization': `Bearer ${localStorage.getItem('atoken')}`
                                 }
                         })
-                        console.log(librosPresentados)
                         setLibrosPresentados(filteredBooks.data)
                         setMostrarFiltrados(true)
                 } catch (error) {
@@ -93,7 +92,7 @@ export default function Catalogo() {
 
         const resetearFiltros = () => {
                 setMostrarFiltrados(false)
-                console.log(books)
+                setCartelError(true)
         }
 
         const opcionesBusqueda = [
@@ -115,16 +114,9 @@ export default function Catalogo() {
 
         return (
                 <ThemeProvider theme={theme}>
+                        <PopUpMejor mostrar={cartelError} cerrar={cerrarCartel} aviso={""}/>
                         <CssBaseline />
-                        <AppBar position="relative">
-                                <Toolbar style={{ "display": "flex", "justifyContent": "space-around" }}>
-                                        {token && <Button style={{ "color": "white" }} href="/Catalog">Catalog 📜</Button>}
-                                        {token && <Button style={{ "color": "white" }} href="/MyBooks">My Books 📚</Button>}
-                                        {token && <Button style={{ "color": "white" }} href="/MyLoans">My loans ♻️</Button>}
-                                        {token && <Button onClick={ clearToken } style={{ "color": "white" }} href="/">Logout 👋🏻</Button>}
-                                        {!token && <Button style={{ "color": "white" }} href="/">Sign in ✏️</Button>}
-                                </Toolbar>
-                        </AppBar>
+                        {token && <PrivateToolBar />}
                         <main>
                                 {/* Hero unit */}
                                 <Box
@@ -145,7 +137,7 @@ export default function Catalogo() {
                                                         Catalog
                                                 </Typography>
                                                 <Box onSubmit={busquedaFiltrada} component='form'
-                                                        style={{ "display": "block", "width": "100%", "alignItems": "center", "justifyContent": "space-around" }}>
+                                                        className='filteredSearch'>
                                                         <Select
                                                                 placeholder={"Select one..."}
                                                                 options={opcionesBusqueda}

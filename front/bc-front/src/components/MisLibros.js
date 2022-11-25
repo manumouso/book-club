@@ -1,28 +1,24 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
-import CameraIcon from '@mui/icons-material/PhotoCamera';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import useAxios from '../hooks/useAxios';
 import axios from '../apis/private'
-import NewBookForm from './NewBookForm';
-import { requirePropFactory } from '@mui/material';
 import { Navigate, useNavigate } from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-
+import PrivateToolBar from './PrivateToolBar';
+import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -61,6 +57,12 @@ export default function MisLibros(props) {
                 }
         }
 
+        const editCover = async (id) => {
+                let a = document.getElementById(id)
+                return (
+                        navigate(`/EditCover/?id=${a.id}`)
+                )
+        }
 
         const editBook = async (id) => {
                 let a = document.getElementById(id)
@@ -96,14 +98,7 @@ export default function MisLibros(props) {
         return (
                 <ThemeProvider theme={theme}>
                         <CssBaseline />
-                        <AppBar position="relative">
-                                <Toolbar style={{ "display": "flex", "justifyContent": "space-around" }}>
-                                        <Button style={{ "color": "white" }} href="/Catalog">Catalog 📜</Button>
-                                        <Button style={{ "color": "white" }} href="/MyBooks">My Books 📚</Button>
-                                        <Button style={{ "color": "white" }} href="/MyLoans">My loans ♻️</Button>
-                                        <Button onClick={ clearToken } style={{ "color": "white" }} href="/">Logout 👋🏻</Button>
-                                </Toolbar>
-                        </AppBar>
+                        <PrivateToolBar />
                         <main>
                                 {/* Hero unit */}
                                 <Box
@@ -124,11 +119,12 @@ export default function MisLibros(props) {
                                                 </Typography>
                                         </Container>
                                 </Box>
+                                {!books.myBooks && <h1 className='unAuthorized'><DoNotDisturbIcon fontSize='large' /><div > UNAUTHORIZED, Please <a href="/">Sign In</a>!</div> <DoNotDisturbIcon fontSize='large' /></h1>}
                                 <Container sx={{ py: 8 }} maxWidth="md">
-                                        {books.myBooks && <Button href="/createBook" style={{ backgroundColor: 'silver', }}>➕ Add New Book </Button>}
+                                        {books.myBooks && <Button href="/createBook" sx={{ display: 'flex', justifyContent: 'space-between', width: '19%', '& button': { m: 1 } }} size="large" variant="contained"><AddCircleOutlineIcon />New Book</Button>}
 
                                         {/* End hero unit */}
-                                        {books.myBooks && <h1 style={{ "textAlign": "center" }}>Books Borrowed From Me</h1>}
+                                        {books.myBooks && <h1 style={{ "textAlign": "center" }}>My Books That Have Been Borrowed</h1>}
 
                                         {books.myBooks && <Grid container spacing={4}> {books.myBooks.booksBorrowedFromMe.map((card) => (<Grid item key={card} xs={12} sm={6} md={4}><Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                                                 <Typography gutterBottom id={card.id} variant="h5" component="h5">
@@ -164,6 +160,7 @@ export default function MisLibros(props) {
                                                 <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                                         <Button onClick={() => { viewDetail(card.id) }} size="small">View Details</Button>
                                                         <EditIcon onClick={() => { editBook(card.id) }} cursor='pointer' ></EditIcon>
+                                                        <InsertPhotoIcon cursor='pointer' onClick={() => { editCover(card.id) }} />
                                                         <DeleteIcon cursor='pointer' onClick={() => { deleteBook(card.id) }} color='error'></DeleteIcon>
 
                                                 </CardActions>
@@ -171,7 +168,7 @@ export default function MisLibros(props) {
                                         </Grid>
                                         ))}
                                         </Grid>}
-                                        {books.myBooks && <h1 style={{ "textAlign": "center" }}>My available books</h1>}
+                                        {books.myBooks && <h1 style={{ "textAlign": "center" }}>My Available Books</h1>}
                                         {books.myBooks && <Grid container spacing={4}> {books.myBooks.availableBooks.map((card) => (<Grid item key={card} xs={12} sm={6} md={4}><Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                                                 <Typography gutterBottom id={card.id} variant="h5" component="h5">
                                                         {card.id}
@@ -201,6 +198,7 @@ export default function MisLibros(props) {
                                                 <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                                         <Button onClick={() => { viewDetail(card.id) }} size="small">View Details</Button>
                                                         <EditIcon cursor='pointer' onClick={() => { editBook(card.id) }} ></EditIcon>
+                                                        <InsertPhotoIcon cursor='pointer' onClick={() => { editCover(card.id) }} />
                                                         <DeleteIcon cursor='pointer' onClick={() => { deleteBook(card.id) }} color='error'></DeleteIcon>
                                                 </CardActions>
                                         </Card>

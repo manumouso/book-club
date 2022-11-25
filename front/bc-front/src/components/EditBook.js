@@ -3,6 +3,11 @@ import { useForm } from "react-hook-form";
 import { Navigate, useNavigate } from "react-router-dom";
 import useAxios from '../hooks/useAxios';
 import { useSearchParams } from "react-router-dom";
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import Button from '@mui/material/Button';
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 
 const EditBook = () => {
 
@@ -56,7 +61,7 @@ const EditBook = () => {
                 let ob = {}
 
                 for (let index = 0; index < 8; index++) {
-                        if (a[index] != b[index] && a[index] !== '') {
+                        if (a[index] != b[index]) {
                                 Object.defineProperty(ob, d[index][0], {
                                         value: d[index][1], writable: true,
                                         enumerable: true, configurable: true
@@ -83,74 +88,84 @@ const EditBook = () => {
 
         }
         return (
-                <div style={{ textAlign: 'center' }}>
-                        {!bookDetail.book && <h1 style={{ textAlign: "center", position: '', backgroundColor: '#ff8c00' }}>¡ Unauthorized, please <a href="/">sign in!</a></h1>}
+                <div className="bookCardStyle">
+                        {!bookDetail.book && <h1 className='unAuthorized'><DoNotDisturbIcon fontSize='large' /><div > UNAUTHORIZED, Please <a href="/">Sign In</a>!</div> <DoNotDisturbIcon fontSize='large' /></h1>}
                         {bookDetail.book && <div>
-                                <h2>Edit Book ✏️</h2>
-                                <h3>Please fill out 👇</h3>
-                                <form onSubmit={handleSubmit(onSubmit)}>
-                                        <div>
+                                <Card sx={{
+                                        width: 550,
+                                        height: 550,
+                                        backgroundColor: '#AED6F1',
+                                        margin: 'auto',
+                                }}>
+                                        <CardContent >
                                                 <div>
-                                                        <label>ISBN: </label>
-                                                        <input type="text" defaultValue={bookDetail.book.isbn}  {...register('isbn', {
-                                                                required: false,
-                                                        })} />
+                                                        <h2>Edit Book ✏️</h2>
+                                                        <h3>Please fill out 👇</h3>
+                                                        <form className="formCustom" onSubmit={handleSubmit(onSubmit)}>
+                                                                <div>
+
+                                                                        <label>ISBN: </label>
+                                                                        <input type="text" defaultValue={bookDetail.book.isbn}  {...register('isbn', {
+                                                                                required: false,
+                                                                        })} />
+                                                                </div>
+                                                                <div>
+                                                                        <label>Title: </label>
+                                                                        <input type="text" defaultValue={bookDetail.book.title}  {...register('title', {
+                                                                                required: false,
+                                                                                maxLength: 60
+                                                                        })} />
+                                                                </div>
+                                                                <div>
+                                                                        <label>Year: </label>
+                                                                        <input type="text" defaultValue={bookDetail.book.year} {...register('year', {
+                                                                                required: false,
+                                                                        })} />
+                                                                </div>
+                                                                <div>
+                                                                        <label>Publisher: </label>
+                                                                        <input type="text" defaultValue={bookDetail.book.publisher}  {...register('publisher', {
+                                                                                required: false,
+                                                                                maxLength: 60
+                                                                        })} />
+                                                                </div>
+                                                                <div className="synopsisClass">
+                                                                        <label>Synopsis: </label>
+                                                                        <textarea type="text" defaultValue={bookDetail.book.synopsis} {...register('synopsis', {
+                                                                                required: false,
+                                                                                maxLength: 200
+                                                                        })} />
+                                                                </div>
+                                                                <div>
+                                                                        <label>Author first name: </label>
+                                                                        <input type="text" defaultValue={bookDetail.book.author.firstName} {...register('firstName', {
+                                                                                required: false,
+                                                                                maxLength: 60
+                                                                        })} />
+                                                                </div>
+                                                                <div>
+                                                                        <label>Author last name: </label>
+                                                                        <input type="text" defaultValue={bookDetail.book.author.lastName}  {...register('lastName', {
+                                                                                required: false,
+                                                                        })} />
+                                                                </div>
+                                                                <div>
+                                                                        <label>Genre: </label>
+                                                                        <input type="text" defaultValue={bookDetail.book.genre.name} {...register('genre', {
+                                                                                required: false,
+                                                                                maxLength: 60
+                                                                        })} />
+                                                                </div>
+                                                                <input className="buttonsCustom" type="submit" value='Edit Book' />
+                                                        </form>
                                                 </div>
-                                                <label>Title: </label>
-                                                <input type="text" defaultValue={bookDetail.book.title}  {...register('title', {
-                                                        required: false,
-                                                        maxLength: 60
-                                                })} />
-                                        </div>
-                                        <div>
-                                                <label>Year: </label>
-                                                <input type="text" defaultValue={bookDetail.book.year} {...register('year', {
-                                                        required: false,
-                                                })} />
-                                        </div>
-                                        <div>
-                                                <label>Publisher: </label>
-                                                <input type="text" defaultValue={bookDetail.book.publisher}  {...register('publisher', {
-                                                        required: false,
-                                                        maxLength: 60
-                                                })} />
-                                        </div>
-                                        <div>
-                                                <label>Synopsis: </label>
-                                                <input type="text" defaultValue={bookDetail.book.synopsis} {...register('synopsis', {
-                                                        required: false,
-                                                        maxLength: 200
-                                                })} />
-                                        </div>
-                                        <div>
-                                                <label>Author first name: </label>
-                                                <input type="text" defaultValue={bookDetail.book.author.firstName} {...register('firstName', {
-                                                        required: false,
-                                                        maxLength: 60
-                                                })} />
-                                        </div>
-                                        <div>
-                                                <label>Author last name: </label>
-                                                <input type="text" defaultValue={bookDetail.book.author.lastName}  {...register('lastName', {
-                                                        required: false,
-                                                })} />
-                                        </div>
-                                        <div>
-                                                <label>Genre: </label>
-                                                <input type="text" defaultValue={bookDetail.book.genre.name} {...register('genre', {
-                                                        required: false,
-                                                        maxLength: 60
-                                                })} />
-                                        </div>
-                                        <br />
-                                        <br />
-                                        <br />
-                                        <input type="submit" value='Edit Book' />
-                                </form>
+                                        </CardContent>
+                                        <CardActions>
+                                                <Button href="/MisLibros" size="small">Back to my books</Button>
+                                        </CardActions>
+                                </Card>
                         </div>
-
                         }
-
                 </div>
         )
 }
