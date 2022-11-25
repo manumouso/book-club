@@ -57,7 +57,7 @@ const NewBookForm = () => {
                                 </div>
                                 <div>
                                         <label>Publisher: </label>
-                                        <input type="text" {...register('publisher', {
+                                        <input type="text"  {...register('publisher', {
                                                 required: true,
                                                 maxLength: 60
                                         })} />

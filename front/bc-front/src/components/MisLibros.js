@@ -40,6 +40,50 @@ export default function MisLibros(props) {
                 )
         }
 
+        const deleteBook = async (id) => {
+                if (window.confirm("Do you really want to delete?")) {
+                        try {
+                                let a = document.getElementById(id)
+                                const deleteBook = await axios.delete(`http://localhost:3333/books/me/${a.id}`, {
+                                        headers: {
+                                                'Content-Language': 'en-US',
+                                                Authorization: `Bearer ${localStorage.getItem('atoken')}`,
+                                        }
+                                })
+                                if (deleteBook.status === 401) {
+                                        console.log('token ');  //// esto se va a borrar con lo q pone octo
+                                }
+                                alert('Deleted !')
+                                document.location.reload(true);
+                        } catch (error) {
+                                alert(error.response.data.message);
+                        }
+                }
+        }
+
+        //ToDo form para editar
+        const editBook = async (id) => {
+                if (window.confirm("Do you really want to edit this book?")) {
+                        try {
+                                let a = document.getElementById(id)
+
+                                // const deleteBook = await axios(`http://localhost:3333/books/me/${a.id}`, {
+                                //         headers: {
+                                //                 'Content-Language': 'en-US',
+                                //                 Authorization: `Bearer ${localStorage.getItem('atoken')}`,
+                                //         }
+                                // })
+                                // if (deleteBook.status === 401) {
+                                //         console.log('token ');  //// esto se va a borrar con lo q pone octo
+                                // }
+                                // alert('Deleted !')
+                                // document.location.reload(true);
+                        } catch (error) {
+                                alert(error.response.data.message);
+                        }
+                }
+        }
+
         const [books, error, loading] = useAxios({
                 axiosInstance: axios,
                 method: 'GET',
@@ -134,8 +178,8 @@ export default function MisLibros(props) {
                                                 </CardContent>
                                                 <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                                         <Button onClick={() => { viewDetail(card.id) }} size="small">View Details</Button>
-                                                        <EditIcon></EditIcon>
-                                                        <DeleteIcon color='error'></DeleteIcon>
+                                                        <EditIcon cursor='pointer' ></EditIcon>
+                                                        <DeleteIcon cursor='pointer' onClick={() => { deleteBook(card.id) }} color='error'></DeleteIcon>
 
                                                 </CardActions>
                                         </Card>
@@ -171,8 +215,8 @@ export default function MisLibros(props) {
                                                 </CardContent>
                                                 <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                                         <Button onClick={() => { viewDetail(card.id) }} size="small">View Details</Button>
-                                                        <EditIcon></EditIcon>
-                                                        <DeleteIcon color='error'></DeleteIcon>
+                                                        <EditIcon cursor='pointer' onClick={() => { deleteBook(card.id) }} ></EditIcon>
+                                                        <DeleteIcon cursor='pointer' onClick={() => { deleteBook(card.id) }} color='error'></DeleteIcon>
                                                 </CardActions>
                                         </Card>
                                         </Grid>

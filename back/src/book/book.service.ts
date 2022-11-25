@@ -5,6 +5,7 @@ import {
   Injectable,
   UnprocessableEntityException,
 } from '@nestjs/common';
+import { Book } from '@prisma/client';
 import { AuthorService } from 'src/author/author.service';
 import { CoverService } from 'src/cover/cover.service';
 import { GenreService } from 'src/genre/genre.service';
@@ -399,55 +400,72 @@ export class BookService {
   async patchBook(bookDto: EditBookDto, bookId: number, userId: number) {
     try {
       const book = await this.findBook(bookId);
-
+      let updatedBook: Book;
       this.checkOwnership(book.ownerId, userId, 'Book Update');
+      if (bookDto.authorId || bookDto.lastName) {
+        const previousAuthorId = book.authorId;
+        const authorDto = {
+          firstName: bookDto.firstName,
+          lastName: bookDto.lastName,
+        };
+        const idAuthor: number = await this.authorService.createOrFindAuthor(
+          authorDto,
+          bookDto.authorId,
+        );
 
-      const previousAuthorId = book.authorId;
-      const authorDto = {
-        firstName: bookDto.firstName,
-        lastName: bookDto.lastName,
-      };
-      const idAuthor: number = await this.authorService.createOrFindAuthor(
-        authorDto,
-        bookDto.authorId,
-      );
+        const authorsInBooksAmount = await this.prisma.book.count({
+          where: {
+            authorId: previousAuthorId,
+          },
+        });
 
-      const authorsInBooksAmount = await this.prisma.book.count({
-        where: {
-          authorId: previousAuthorId,
-        },
-      });
-      await this.authorService.updateAuthorIfPossible(
-        idAuthor,
-        authorDto,
-        authorsInBooksAmount,
-      );
+        await this.authorService.updateAuthorIfPossible(
+          idAuthor,
+          authorDto,
+          authorsInBooksAmount,
+        );
 
-      const updatedBook = await this.prisma.book.update({
-        where: {
-          id: bookId,
-        },
-        data: {
-          isbn: bookDto.isbn,
-          title: bookDto.title,
-          year: bookDto.year,
-          publisher: bookDto.publisher,
-          synopsis: bookDto.synopsis,
-          genreId: bookDto.genreId,
-          authorId: idAuthor,
-        },
-      });
-      if (!updatedBook) throw new ForbiddenException('Book Update Failed');
+        updatedBook = await this.prisma.book.update({
+          where: {
+            id: bookId,
+          },
+          data: {
+            isbn: bookDto.isbn,
+            title: bookDto.title,
+            year: bookDto.year,
+            publisher: bookDto.publisher,
+            synopsis: bookDto.synopsis,
+            genreId: bookDto.genreId,
+            authorId: idAuthor,
+          },
+        });
+        if (!updatedBook) throw new ForbiddenException('Book Update Failed');
 
-      const authorsInBooksAmount2 = await this.prisma.book.count({
-        where: {
-          authorId: previousAuthorId,
-        },
-      });
-      await this.authorService.deleteAuthorIfPossible(
-        authorsInBooksAmount2,
-        previousAuthorId,
-      );
+        const authorsInBooksAmount2 = await this.prisma.book.count({
+          where: {
+            authorId: previousAuthorId,
+          },
+        });
+        await this.authorService.deleteAuthorIfPossible(
+          authorsInBooksAmount2,
+          previousAuthorId,
+        );
+      } else {
+        updatedBook = await this.prisma.book.update({
+          where: {
+            id: bookId,
+          },
+          data: {
+            isbn: bookDto.isbn,
+            title: bookDto.title,
+            year: bookDto.year,
+            publisher: bookDto.publisher,
+            synopsis: bookDto.synopsis,
+            genreId: bookDto.genreId,
+          },
+        });
+        if (!updatedBook) throw new ForbiddenException('Book Update Failed');
+      }
 
       return { updatedBook };
     } catch (error) {
@@ -506,7 +524,7 @@ export class BookService {
     return updatedBook;
   }
 
-  async updateBookWhenBorrowed(bookId: number, userId: number, now: any){
+  async updateBookWhenBorrowed(bookId: number, userId: number, now: any) {
     const updatedBook = await this.prisma.book.update({
       where: {
         id: bookId,
@@ -521,7 +539,7 @@ export class BookService {
     return updatedBook;
   }
 
-  async updateBookWhenReturned(bookId: number){
+  async updateBookWhenReturned(bookId: number) {
     const updatedBook = await this.prisma.book.update({
       where: {
         id: bookId,
