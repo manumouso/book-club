@@ -30,7 +30,6 @@ const NewBookForm = () => {
                 if (validated) {
                         try {
                                 const resp = await axios.post("http://localhost:3333/books/me", data2post, { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('atoken')}` } });
-                                console.log(resp);
                                 if (resp.status === 201) {
                                         alert('created!')
                                         return (
