@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { Navigate, useNavigate } from "react-router-dom";
-import AddCover from "./AddCover";
 import Button from '@mui/material/Button';
-
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
 
 const NewBookForm = () => {
 

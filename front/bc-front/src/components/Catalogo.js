@@ -1,27 +1,22 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
-import CameraIcon from '@mui/icons-material/PhotoCamera';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import useAxios from '../hooks/useAxios';
 import axios from '../apis/private'
 import axios1 from 'axios'
 import Select from 'react-select';
 import { TextField } from '@mui/material';
-import { useForm } from "react-hook-form";
 import { Navigate, useNavigate } from "react-router-dom";
+import PrivateToolBar from './PrivateToolBar';
 
 const theme = createTheme();
 
@@ -109,15 +104,7 @@ export default function Catalogo() {
         return (
                 <ThemeProvider theme={theme}>
                         <CssBaseline />
-                        {token && <AppBar position="relative">
-                                <Toolbar style={{ "display": "flex", "justifyContent": "space-around" }}>
-                                        <Button style={{ "color": "white" }} href="/Catalogo">Catalogo 📜</Button>
-                                        <Button style={{ "color": "white" }} href="/MisLibros">Mis libros 📚</Button>
-                                        <Button style={{ "color": "white" }} href="/MisPrestamos">Prestamos ♻️</Button>
-                                        <Button style={{ "color": "white" }} href="/">Salir 👋🏻</Button>
-
-                                </Toolbar>
-                        </AppBar>}
+                        {token && <PrivateToolBar />}
                         <main>
                                 {/* Hero unit */}
                                 <Box
@@ -137,7 +124,8 @@ export default function Catalogo() {
                                                 >
                                                         Catálogo
                                                 </Typography>
-                                                <Box onSubmit={busquedaFiltrada} component='form' className='filteredSearch'>
+                                                <Box onSubmit={busquedaFiltrada} component='form'
+                                                        className='filteredSearch'>
                                                         <Select
                                                                 placeholder={"Seleccione uno..."}
                                                                 options={opcionesBusqueda}

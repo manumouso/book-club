@@ -9,6 +9,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import { useSearchParams } from "react-router-dom";
 import { AppBar, Box, Button, CssBaseline, Grid, Toolbar } from '@mui/material';
+import PrivateToolBar from './PrivateToolBar';
 
 const theme = createTheme();
 
@@ -63,15 +64,7 @@ export default function Detail() {
         return (
                 <ThemeProvider theme={theme}>
                         <CssBaseline />
-                        <AppBar position="relative">
-                                <Toolbar style={{ "display": "flex", "justifyContent": "space-around" }}>
-                                        <Button style={{ "color": "white" }} href="/Catalogo">Catalogo 📜</Button>
-                                        <Button style={{ "color": "white" }} href="/MisLibros">Mis libros 📚</Button>
-                                        <Button style={{ "color": "white" }} href="/MisPrestamos">Prestamos ♻️</Button>
-                                        <Button style={{ "color": "white" }} href="/">Salir 👋🏻</Button>
-
-                                </Toolbar>
-                        </AppBar>
+                        <PrivateToolBar />
                         <Box sx={{
                                 bgcolor: 'background.paper',
                                 pt: 8,
