@@ -17,6 +17,7 @@ import Select from 'react-select';
 import { TextField } from '@mui/material';
 import { Navigate, useNavigate } from "react-router-dom";
 import PrivateToolBar from './PrivateToolBar';
+import PopUpMejor from './PopUpMejor';
 
 const theme = createTheme();
 
@@ -45,6 +46,10 @@ export default function Catalogo() {
 
         const [librosPresentados, setLibrosPresentados] = React.useState()
         const [mostrarFiltados, setMostrarFiltrados] = React.useState(false)
+        const [cartelError, setCartelError] = React.useState(false)
+        const cerrarCartel = () => {
+                setCartelError(false);
+        }
 
         //ToDo usar amount para el paginado
         const amount = getAmount()
@@ -87,6 +92,7 @@ export default function Catalogo() {
 
         const resetearFiltros = () => {
                 setMostrarFiltrados(false)
+                setCartelError(true)
         }
 
         const opcionesBusqueda = [
@@ -103,6 +109,7 @@ export default function Catalogo() {
 
         return (
                 <ThemeProvider theme={theme}>
+                        <PopUpMejor mostrar={cartelError} cerrar={cerrarCartel} aviso={""}/>
                         <CssBaseline />
                         {token && <PrivateToolBar />}
                         <main>
