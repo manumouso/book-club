@@ -120,7 +120,7 @@ export default function MisLibros(props) {
                                                 </Typography>
                                         </Container>
                                 </Box>
-                                {!books.myBooks && <h1 style={{ textAlign: "center", position: '', backgroundColor: '#ff8c00' }}>¡ Unauthorized, please <a href="/">sign in!</a></h1>}
+                                {!books.myBooks && <h1 className='unAuthorized'>¡ Unauthorized, please <a href="/">sign in!</a></h1>}
                                 <Container sx={{ py: 8 }} maxWidth="md">
                                         {books.myBooks && <Button href="/createBook" style={{ backgroundColor: 'silver', }}>➕ Add New Book </Button>}
 

@@ -43,79 +43,91 @@ const NewBookForm = () => {
         }
 
         return (
-                <div style={{ textAlign: 'center' }}>
-                        <h2>New Book 📔</h2>
-                        <h3>Please fill out 👇</h3>
-                        <form onSubmit={handleSubmit(onSubmit)}>
-                                <div>
-                                        <label>Title: </label>
-                                        <input type="text" {...register('title', {
-                                                required: true,
-                                                maxLength: 60
-                                        })} />
-                                </div>
-                                <div>
-                                        <label>Publisher: </label>
-                                        <input type="text"  {...register('publisher', {
-                                                required: true,
-                                                maxLength: 60
-                                        })} />
-                                </div>
-                                <div>
-                                        <label>Year: </label>
-                                        <input type="text" {...register('year', {
-                                                required: true,
-                                        })} />
-                                </div>
-                                <div>
-                                        <label>Synopsis: </label>
-                                        <input type="text" {...register('synopsis', {
-                                                required: false,
-                                                maxLength: 200
-                                        })} />
-                                </div>
-                                <div>
-                                        <label>ISBN: </label>
-                                        <input type="text" {...register('isbn', {
-                                                required: true,
-                                        })} />
-                                </div>
-                                <div>
-                                        <label>AuthorId: </label>
-                                        <input type="text" {...register('authorId', {
-                                                required: true,
-                                        })} />
-                                </div>
-                                <div>
-                                        <label>GenreId: </label>
-                                        <input type="text" {...register('genreId', {
-                                                required: true,
-                                                maxLength: 60
-                                        })} />
-                                </div>
-                                <div>
-                                        <p>Author</p>
-                                        <label>First name: </label>
-                                        <input type="text" {...register('firstName', {
-                                                required: true,
-                                                maxLength: 60
-                                        })} />
-                                </div>
-                                <div>
-                                        <label>Last name: </label>
-                                        <input type="text" {...register('lastName', {
-                                                required: true,
-                                                maxLength: 60
-                                        })} />
-                                </div>
-                                <br />
-                                <br />
-                                <br />
-                                <input type="submit" value='Submit' />
+                <div className="bookCardStyle">
+                        <div>
+                                <Card sx={{
+                                        width: 550,
+                                        height: 550,
+                                        backgroundColor: '#AED6F1',
+                                        margin: 'auto',
+                                }}>
+                                        <CardContent >
 
-                        </form>
-
-
+                                                <h2>New Book 📔</h2>
+                                                <h3>Please fill out 👇</h3>
+                                                <form onSubmit={handleSubmit(onSubmit)}>
+                                                        <div>
+                                                                <label>Title: </label>
+                                                                <input type="text" {...register('title', {
+                                                                        required: true,
+                                                                        maxLength: 60
+                                                                })} />
+                                                        </div>
+                                                        <div>
+                                                                <label>Publisher: </label>
+                                                                <input type="text"  {...register('publisher', {
+                                                                        required: true,
+                                                                        maxLength: 60
+                                                                })} />
+                                                        </div>
+                                                        <div>
+                                                                <label>Year: </label>
+                                                                <input type="text" {...register('year', {
+                                                                        required: true,
+                                                                })} />
+                                                        </div>
+                                                        <div>
+                                                                <label>Synopsis: </label>
+                                                                <input type="text" {...register('synopsis', {
+                                                                        required: false,
+                                                                        maxLength: 200
+                                                                })} />
+                                                        </div>
+                                                        <div>
+                                                                <label>ISBN: </label>
+                                                                <input type="text" {...register('isbn', {
+                                                                        required: true,
+                                                                })} />
+                                                        </div>
+                                                        <div>
+                                                                <label>AuthorId: </label>
+                                                                <input type="text" {...register('authorId', {
+                                                                        required: true,
+                                                                })} />
+                                                        </div>
+                                                        <div>
+                                                                <label>GenreId: </label>
+                                                                <input type="text" {...register('genreId', {
+                                                                        required: true,
+                                                                        maxLength: 60
+                                                                })} />
+                                                        </div>
+                                                        <div>
+                                                                <p>Author</p>
+                                                                <label>First name: </label>
+                                                                <input type="text" {...register('firstName', {
+                                                                        required: true,
+                                                                        maxLength: 60
+                                                                })} />
+                                                        </div>
+                                                        <div>
+                                                                <label>Last name: </label>
+                                                                <input type="text" {...register('lastName', {
+                                                                        required: true,
+                                                                        maxLength: 60
+                                                                })} />
+                                                        </div>
+                                                        <br />
+                                                        <br />
+                                                        <br />
+                                                        <input type="submit" value='Create Book' />
+                                                </form>
+                                        </CardContent>
+                                        <CardActions>
+                                                <Button href="/MisLibros" size="small">Back to my books</Button>
+                                        </CardActions>
+                                </Card>
+                        </div>
                 </div>
         )
 }

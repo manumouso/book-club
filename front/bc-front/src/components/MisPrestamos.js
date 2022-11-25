@@ -82,7 +82,7 @@ export default function MisPrestamos() {
                                                 </Typography>
                                         </Container>
                                 </Box>
-                                {!books.myBorrows && <h1 style={{ textAlign: "center", position: '', backgroundColor: '#ff8c00' }}>¡ Unauthorized, please <a href="/">sign in!</a></h1>}
+                                {!books.myBorrows && <h1 className='unAuthorized'>¡ Unauthorized, please <a href="/">sign in!</a></h1>}
                                 <Container sx={{ py: 8 }} maxWidth="md">
                                         {/* End hero unit */}
                                         {books.myBorrows && <Grid container spacing={4}>

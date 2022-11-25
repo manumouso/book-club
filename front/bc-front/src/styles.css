@@ -1,0 +1,18 @@
+.bookCardStyle {
+        height: 100vh;
+        text-align: center;
+        background-image: url('https://64.media.tumblr.com/1f22fb16eaa607a10f72a17a85cd3e74/tumblr_ohwrn5vqLj1sta38no1_1280.jpg');
+}
+
+.unAuthorized {
+        text-align: center;
+        position: '';
+        background-color: #ff8c00
+}
+
+.filteredSearch {
+        display: block;
+        width: 100%;
+        align-items: center;
+        justify-content: space-around;
+}

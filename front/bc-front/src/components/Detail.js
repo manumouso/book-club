@@ -81,7 +81,7 @@ export default function Detail() {
                                         <Typography component="h1" variant="h2" align="center" color="text.primary" gutterBottom>Book Detail</Typography>
                                 </Container>
                         </Box>
-                        {!bookDetail.book && <h1 style={{ textAlign: "center", position: '', backgroundColor: '#ff8c00' }}>¡ Unauthorized, please <a href="/">sign in!</a></h1>}
+                        {!bookDetail.book && <h1 className='unAuthorized'>¡ Unauthorized, please <a href="/">sign in!</a></h1>}
                         <Container sx={{ py: 8 }} maxWidth="md">
                                 {bookDetail.book && <Grid container spacing={4}>
                                         {bookDetail.book && <Grid>

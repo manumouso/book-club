@@ -137,8 +137,7 @@ export default function Catalogo() {
                                                 >
                                                         Catálogo
                                                 </Typography>
-                                                <Box onSubmit={busquedaFiltrada} component='form'
-                                                        style={{ "display": "block", "width": "100%", "alignItems": "center", "justifyContent": "space-around" }}>
+                                                <Box onSubmit={busquedaFiltrada} component='form' className='filteredSearch'>
                                                         <Select
                                                                 placeholder={"Seleccione uno..."}
                                                                 options={opcionesBusqueda}
