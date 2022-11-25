@@ -121,14 +121,15 @@ export default function Catalogo() {
         return (
                 <ThemeProvider theme={theme}>
                         <CssBaseline />
-                        {token && <AppBar position="relative">
+                        <AppBar position="relative">
                                 <Toolbar style={{ "display": "flex", "justifyContent": "space-around" }}>
-                                        <Button style={{ "color": "white" }} href="/Catalog">Catalog 📜</Button>
-                                        <Button style={{ "color": "white" }} href="/MyBooks">My Books 📚</Button>
-                                        <Button style={{ "color": "white" }} href="/MyLoans">My loans ♻️</Button>
-                                        <Button onClick={ clearToken } style={{ "color": "white" }} href="/">Logout 👋🏻</Button>
+                                        {token && <Button style={{ "color": "white" }} href="/Catalog">Catalog 📜</Button>}
+                                        {token && <Button style={{ "color": "white" }} href="/MyBooks">My Books 📚</Button>}
+                                        {token && <Button style={{ "color": "white" }} href="/MyLoans">My loans ♻️</Button>}
+                                        {token && <Button onClick={ clearToken } style={{ "color": "white" }} href="/">Logout 👋🏻</Button>}
+                                        {!token && <Button style={{ "color": "white" }} href="/">Sign in ✏️</Button>}
                                 </Toolbar>
-                        </AppBar>}
+                        </AppBar>
                         <main>
                                 {/* Hero unit */}
                                 <Box
