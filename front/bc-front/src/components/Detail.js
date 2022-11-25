@@ -9,10 +9,13 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 //import { useSearchParams } from "react-router-dom";
 import { AppBar, Box, Button, CssBaseline, Grid, Toolbar } from '@mui/material';
+import { Navigate, useNavigate } from "react-router-dom";
 
 const theme = createTheme();
 
 export default function Detail() {
+
+        const navigate = useNavigate();
 
         async function handleBorrow() {
                 try {
@@ -25,7 +28,14 @@ export default function Detail() {
                         })
                         alert('Book borrowed. BookId: ' + borrowedBookId.data.borrowedBookId)  /// VA OK PARA SUCCESS
                 } catch (error) {
-                        alert(error.response.data.message); /// VA BIEN PARA TODOS LOS ERRORES
+                        if (error.response.status === 401)
+                        {
+                                navigate(`/Unauthorized`)
+                        }
+                        else
+                        {
+                                alert(error.response.data.message) /// VA BIEN PARA TODOS LOS ERRORES
+                        }
                 }
         }
 
@@ -40,7 +50,14 @@ export default function Detail() {
                         })
                         alert('Book returned. BookId: ' + returnedBook.data.returnedBookId) /// VA OK PARA SUCCESS
                 } catch (error) {
-                        alert(error.response.data.message) /// VA BIEN PARA TODOS LOS ERRORES
+                        if (error.response.status === 401)
+                        {
+                                navigate(`/Unauthorized`)
+                        }
+                        else
+                        {
+                                alert(error.response.data.message) /// VA BIEN PARA TODOS LOS ERRORES
+                        }
                 }
         }
 
