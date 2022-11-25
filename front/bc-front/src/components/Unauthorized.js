@@ -1,9 +1,10 @@
 import * as React from 'react';
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 
 export default function Unauthorized() {
     return (
         <main>
-            <h1 style={{ textAlign: "center", position: '', backgroundColor: '#ff8c00' }}>¡ Unauthorized, please <a href="/">sign in!</a></h1>
+            <h1 className='unAuthorized'><DoNotDisturbIcon fontSize='large' /><div > UNAUTHORIZED, Please <a href="/">Sign In</a>!</div> <DoNotDisturbIcon fontSize='large' /></h1>
         </main>
     );
 }
