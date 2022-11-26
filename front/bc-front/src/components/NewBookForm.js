@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
+import { useState } from "react";
 import useAxios from '../hooks/useAxios';
 import styles from '../styles.css'
 
@@ -12,10 +13,23 @@ const NewBookForm = () => {
 
         const { register, handleSubmit } = useForm();
         const navigate = useNavigate();
+        const [autores, setAutores] = useState()
+        const [generos, setGeneros] = useState()
+        const [crearAutor, setCrearAutor] = useState(false)
 
         const getAuthors = async () => {
                 try {
                         const resp = await axios.get('http://localhost:3333/authors')
+                        setAutores(resp.data.authors);
+                } catch (error) {
+                        console.log(error.data.response);
+                }
+        }
+
+        const getGenres = async () => {
+                try {
+                        const resp = await axios.get('http://localhost:3333/genres')
+                        setGeneros(resp.data.genres);
 
                 } catch (error) {
                         console.log(error.data.response);
@@ -23,24 +37,40 @@ const NewBookForm = () => {
         }
 
         const authors = getAuthors()
+        const genres = getGenres()
 
         const onSubmit = async (data) => {
 
-                const data2post = {
-                        isbn: data.isbn,
-                        title: data.title,
-                        year: data.year,
-                        publisher: data.publisher,
-                        synopsis: data.synopsis,
-                        authorId: data.authorId,
-                        firstName: data.firstName,
-                        lastName: data.lastName,
-                        genreId: data.genreId,
+                let data2post;
+
+                if (!(data.firstName && data.lastName)) {
+                        data2post = {
+                                isbn: data.isbn,
+                                title: data.title,
+                                year: data.year,
+                                publisher: data.publisher,
+                                synopsis: data.synopsis,
+                                authorId: data.authorId,
+                                firstName: data.firstName,
+                                lastName: data.lastName,
+                                genreId: data.genreId,
+                        }
+                }
+                else {
+                        data2post = {
+                                isbn: data.isbn,
+                                title: data.title,
+                                year: data.year,
+                                publisher: data.publisher,
+                                synopsis: data.synopsis,
+                                firstName: data.firstName,
+                                lastName: data.lastName,
+                                genreId: data.genreId,
+                        }
                 }
 
-                //ToDo: fieldsValidator
                 const validated = true
-                // validated? createBook : rollback
+
                 if (validated) {
                         try {
                                 const resp = await axios.post("http://localhost:3333/books/me", data2post, { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('atoken')}` } });
@@ -103,45 +133,53 @@ const NewBookForm = () => {
                                                                                 required: true,
                                                                         })} />
                                                                 </div>
-                                                                <div>
-                                                                        <label for="cars">Choose an author:</label>
-                                                                        <select name="cars" id="cars">
-                                                                                <option value="volvo">maxi</option>
+                                                                {!crearAutor && <div>
+                                                                        <label>Choose an author: </label>
+
+                                                                        {autores && <select name="autores" id="autor" {...register('authorId', { required: true, })}>
+                                                                                {autores.map((autor) => (
+                                                                                        <option key={autor.id} value={autor.id} >{autor.firstName + " " + autor.lastName}</option>
+                                                                                ))}
                                                                         </select>
-                                                                </div>
+                                                                        }
+                                                                </div>}
                                                                 <div>
-                                                                        <label for="cars">Choose a genre:</label>
-                                                                        <select name="cars" id="cars">
-                                                                                <option value="volvo">maxi</option>
+                                                                        <label>Choose a genre: </label>
+                                                                        {autores && <select name="cars" id="cars" {...register('genreId', { required: true, })}>
+                                                                                {generos.map((genero) => (
+                                                                                        <option key={genero.id} value={genero.id} >{genero.name}</option>
+                                                                                ))}
                                                                         </select>
+                                                                        }
                                                                 </div>
-                                                                <div>
-                                                                        <label>AuthorId: </label>
-                                                                        <input type="text" {...register('authorId', {
+                                                                <div style={{ "visibility": "hidden" }}>
+                                                                        <input type="text" value={" "} {...register('lastName', {
                                                                                 required: true,
                                                                         })} />
                                                                 </div>
-                                                                <div>
-                                                                        <label>GenreId: </label>
-                                                                        <input type="text" {...register('genreId', {
-                                                                                required: true,
-                                                                                maxLength: 60
-                                                                        })} />
+                                                                {crearAutor && <div><div>
+                                                                        <label>New author </label>
                                                                 </div>
-                                                                <div>
-                                                                        <label>First name: </label>
-                                                                        <input type="text" {...register('firstName', {
-                                                                                required: true,
-                                                                                maxLength: 60
-                                                                        })} />
+
+                                                                        <div>
+                                                                                <label>First name: </label>
+                                                                                <input type="text" {...register('firstName', {
+                                                                                        required: true,
+                                                                                        maxLength: 60
+                                                                                })} />
+                                                                        </div>
+                                                                        <div>
+                                                                                <label>Last name: </label>
+                                                                                <input type="text" {...register('lastName', {
+                                                                                        required: true,
+                                                                                        maxLength: 60
+                                                                                })} />
+                                                                        </div>
                                                                 </div>
-                                                                <div>
-                                                                        <label>Last name: </label>
-                                                                        <input type="text" {...register('lastName', {
-                                                                                required: true,
-                                                                                maxLength: 60
-                                                                        })} />
-                                                                </div>
+                                                                }
+                                                                {!crearAutor && <Button variant="contained" style={{ "margin": "5px 0px 5px", "fontSize": "10px" }} onClick={() => { setCrearAutor(true) }} >Create an Author</Button>}
+                                                                {crearAutor && <Button variant="contained" style={{ "margin": "5px 0px 5px", "fontSize": "10px" }} onClick={() => { setCrearAutor(false) }} >chose an Author</Button>}
+
                                                                 <input className="buttonsCustom" type="submit" value='Create Book' />
                                                         </form>
                                                 </div>

@@ -28,7 +28,6 @@ export default function SignIn(props) {
         const [password, setPassword] = useState('')
         const [user, setUser] = useState(null)
 
-
         function redirectHomePage() {
                 return (
                         navigate('/MisLibros')
@@ -57,7 +56,6 @@ export default function SignIn(props) {
                         setUser(user)
                         setPassword('')
                         setUsername('')
-
                         redirectHomePage()
 
                 } catch (e) {

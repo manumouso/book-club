@@ -196,6 +196,7 @@ export class BookService {
         },
         genre: {
           select: {
+                id: true,
             name: true,
           },
         },

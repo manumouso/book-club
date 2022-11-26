@@ -21,18 +21,6 @@ import PopUpMejor from './PopUpMejor';
 
 const theme = createTheme();
 
-async function getAmount() {
-        const cards = await axios1.get('http://localhost:3333/books/amount')
-}
-
-// ToDo usar esta fun p ver detalle de foto
-async function getCover(bookId) {
-        return await axios1.get('http://localhost:3333/covers/' + bookId, { headers: { 'Content-Type': 'image/png' } }).then(covers => {
-                return Promise.resolve(covers);
-        });
-}
-
-
 export default function Catalogo() {
 
         const navigate = useNavigate();
@@ -43,16 +31,13 @@ export default function Catalogo() {
                         navigate(`/Details/?id=${a.id}`)
                 )
         }
-
+        const [errorMsg, setErrorMsg] = React.useState('')
         const [librosPresentados, setLibrosPresentados] = React.useState()
         const [mostrarFiltados, setMostrarFiltrados] = React.useState(false)
         const [cartelError, setCartelError] = React.useState(false)
         const cerrarCartel = () => {
                 setCartelError(false);
         }
-
-        //ToDo usar amount para el paginado
-        const amount = getAmount()
 
         const [books, error, loading] = useAxios({
                 axiosInstance: axios,
@@ -86,7 +71,8 @@ export default function Catalogo() {
                         setLibrosPresentados(filteredBooks.data)
                         setMostrarFiltrados(true)
                 } catch (error) {
-                        alert(error.response.data.message)
+                        setErrorMsg(error.response.data)
+                        setCartelError(true)
                 }
         }
 
@@ -109,11 +95,10 @@ export default function Catalogo() {
 
         return (
                 <ThemeProvider theme={theme}>
-                        <PopUpMejor mostrar={cartelError} cerrar={cerrarCartel} aviso={""}/>
+                        <PopUpMejor mostrar={cartelError} cerrar={cerrarCartel} aviso={errorMsg} />
                         <CssBaseline />
                         {token && <PrivateToolBar />}
                         <main>
-                                {/* Hero unit */}
                                 <Box
                                         sx={{
                                                 bgcolor: 'background.paper',
@@ -156,7 +141,7 @@ export default function Catalogo() {
                                                                 autoFocus
                                                         />
                                                         <Button type='submit' variant='contained'>Buscar</Button>
-                                                        <Button type='button' variant='contained' color='secondary' onClick={resetearFiltros}>Borrar filtros</Button>
+                                                        <Button type='button' variant='contained' color='secondary' style={{ "marginLeft": "15px" }} onClick={resetearFiltros}>Borrar filtros</Button>
                                                 </Box>
                                         </Container>
                                 </Box>

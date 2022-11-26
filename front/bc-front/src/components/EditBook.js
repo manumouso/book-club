@@ -7,6 +7,7 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
+import { useState } from "react";
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 
 const EditBook = () => {
@@ -16,6 +17,9 @@ const EditBook = () => {
 
         const { register, handleSubmit } = useForm();
         const navigate = useNavigate();
+        const [autores, setAutores] = useState()
+        const [generos, setGeneros] = useState()
+        const [crearAutor, setCrearAutor] = useState(false)
 
         const [bookDetail, error, loading] = useAxios({
                 axiosInstance: axios,
@@ -32,17 +36,57 @@ const EditBook = () => {
                 }
         })
 
-        const onSubmit = async (data) => {
-                const data2post = {
-                        isbn: data.isbn,
-                        title: data.title,
-                        publisher: data.publisher,
-                        year: data.year,
-                        synopsis: data.synopsis,
-                        firstName: data.firstName,
-                        lastName: data.lastName,
-                        genre: data.genre,
+        const getAuthors = async () => {
+                try {
+                        const resp = await axios.get('http://localhost:3333/authors')
+                        setAutores(resp.data.authors);
+                } catch (error) {
+                        console.log(error.data.response);
                 }
+        }
+
+        const getGenres = async () => {
+                try {
+                        const resp = await axios.get('http://localhost:3333/genres')
+                        setGeneros(resp.data.genres);
+
+                } catch (error) {
+                        console.log(error.data.response);
+                }
+        }
+
+        const authors = getAuthors()
+        const genres = getGenres()
+
+        const onSubmit = async (data) => {
+                let data2post;
+
+                if (!(data.firstName && data.lastName)) {
+                        data2post = {
+                                isbn: data.isbn,
+                                title: data.title,
+                                year: data.year,
+                                publisher: data.publisher,
+                                synopsis: data.synopsis,
+                                authorId: data.authorId,
+                                firstName: data.firstName,
+                                lastName: data.lastName,
+                                genreId: data.genreId,
+                        }
+                }
+                else {
+                        data2post = {
+                                isbn: data.isbn,
+                                title: data.title,
+                                year: data.year,
+                                publisher: data.publisher,
+                                synopsis: data.synopsis,
+                                firstName: data.firstName,
+                                lastName: data.lastName,
+                                genreId: data.genreId,
+                        }
+                }
+
                 const newBook = {
                         isbn: bookDetail.book.isbn,
                         title: bookDetail.book.title,
@@ -51,7 +95,7 @@ const EditBook = () => {
                         synopsis: bookDetail.book.synopsis,
                         firstName: bookDetail.book.author.firstName,
                         lastName: bookDetail.book.author.lastName,
-                        genre: bookDetail.book.genre.name,
+                        genreId: bookDetail.book.genre.id,
                 }
 
                 let a = Object.values(data2post)
@@ -60,7 +104,7 @@ const EditBook = () => {
 
                 let ob = {}
 
-                for (let index = 0; index < 8; index++) {
+                for (let index = 0; index < 9; index++) {
                         if (a[index] != b[index]) {
                                 Object.defineProperty(ob, d[index][0], {
                                         value: d[index][1], writable: true,
@@ -68,6 +112,7 @@ const EditBook = () => {
                                 });
                         }
                 }
+
                 if (Object.entries(ob).length !== 0) {
                         try {
                                 const resp = await axios.patch(`http://localhost:3333/books/me/${idIngresada}`, ob, {
@@ -89,83 +134,100 @@ const EditBook = () => {
         }
         return (
                 <div className="bookCardStyle">
-                        {!bookDetail.book && <h1 className='unAuthorized'><DoNotDisturbIcon fontSize='large' /><div > UNAUTHORIZED, Please <a href="/">Sign In</a>!</div> <DoNotDisturbIcon fontSize='large' /></h1>}
-                        {bookDetail.book && <div>
+                        <div>
                                 <Card sx={{
                                         width: 550,
                                         height: 550,
                                         backgroundColor: '#AED6F1',
                                         margin: 'auto',
                                 }}>
-                                        <CardContent >
+                                        {bookDetail.book && <CardContent >
                                                 <div>
                                                         <h2>Edit Book ✏️</h2>
                                                         <h3>Please fill out 👇</h3>
                                                         <form className="formCustom" onSubmit={handleSubmit(onSubmit)}>
                                                                 <div>
-
-                                                                        <label>ISBN: </label>
-                                                                        <input type="text" defaultValue={bookDetail.book.isbn}  {...register('isbn', {
-                                                                                required: false,
+                                                                        <label>Title: </label>
+                                                                        <input defaultValue={bookDetail.book.title} type="text" {...register('title', {
+                                                                                required: true,
+                                                                                maxLength: 60
                                                                         })} />
                                                                 </div>
                                                                 <div>
-                                                                        <label>Title: </label>
-                                                                        <input type="text" defaultValue={bookDetail.book.title}  {...register('title', {
-                                                                                required: false,
+                                                                        <label>Publisher: </label>
+                                                                        <input defaultValue={bookDetail.book.publisher} type="text"  {...register('publisher', {
+                                                                                required: true,
                                                                                 maxLength: 60
                                                                         })} />
                                                                 </div>
                                                                 <div>
                                                                         <label>Year: </label>
-                                                                        <input type="text" defaultValue={bookDetail.book.year} {...register('year', {
-                                                                                required: false,
-                                                                        })} />
-                                                                </div>
-                                                                <div>
-                                                                        <label>Publisher: </label>
-                                                                        <input type="text" defaultValue={bookDetail.book.publisher}  {...register('publisher', {
-                                                                                required: false,
-                                                                                maxLength: 60
+                                                                        <input defaultValue={bookDetail.book.year} type="text" {...register('year', {
+                                                                                required: true,
                                                                         })} />
                                                                 </div>
                                                                 <div className="synopsisClass">
                                                                         <label>Synopsis: </label>
-                                                                        <textarea type="text" defaultValue={bookDetail.book.synopsis} {...register('synopsis', {
+                                                                        <textarea defaultValue={bookDetail.book.synopsis} type="text" {...register('synopsis', {
                                                                                 required: false,
                                                                                 maxLength: 200
                                                                         })} />
                                                                 </div>
                                                                 <div>
-                                                                        <label>Author first name: </label>
-                                                                        <input type="text" defaultValue={bookDetail.book.author.firstName} {...register('firstName', {
-                                                                                required: false,
-                                                                                maxLength: 60
+                                                                        <label>ISBN: </label>
+                                                                        <input defaultValue={bookDetail.book.isbn} type="text" {...register('isbn', {
+                                                                                required: true,
                                                                         })} />
                                                                 </div>
+                                                                {!crearAutor && <div>
+                                                                        <label>Choose an author: </label>
+                                                                        {autores && <select name="autores" id="autor" {...register('authorId', { required: true, })}>
+                                                                                {autores.map((autor) => (
+                                                                                        <option key={autor.id} value={autor.id} >{autor.firstName + " " + autor.lastName}</option>
+                                                                                ))}
+                                                                        </select>
+                                                                        }
+                                                                </div>}
                                                                 <div>
-                                                                        <label>Author last name: </label>
-                                                                        <input type="text" defaultValue={bookDetail.book.author.lastName}  {...register('lastName', {
-                                                                                required: false,
-                                                                        })} />
+                                                                        <label>Choose a genre: </label>
+                                                                        {autores && <select name="cars" id="cars" {...register('genreId', { required: true, })}>
+                                                                                {generos.map((genero) => (
+                                                                                        <option key={genero.id} value={genero.id} >{genero.name}</option>
+                                                                                ))}
+                                                                        </select>
+                                                                        }
                                                                 </div>
-                                                                <div>
-                                                                        <label>Genre: </label>
-                                                                        <input type="text" defaultValue={bookDetail.book.genre.name} {...register('genre', {
-                                                                                required: false,
-                                                                                maxLength: 60
-                                                                        })} />
+                                                                {crearAutor && <div><div>
+                                                                        <label>New author </label>
                                                                 </div>
-                                                                <input className="buttonsCustom" type="submit" value='Edit Book' />
+                                                                        <div>
+                                                                                <label>First name: </label>
+                                                                                <input defaultValue={bookDetail.book.author.firstName} type="text" {...register('firstName', {
+                                                                                        required: true,
+                                                                                        maxLength: 60
+                                                                                })} />
+                                                                        </div>
+                                                                        <div>
+                                                                                <label>Last name: </label>
+                                                                                <input defaultValue={bookDetail.book.author.lastName} type="text" {...register('lastName', {
+                                                                                        required: true,
+                                                                                        maxLength: 60
+                                                                                })} />
+                                                                        </div>
+                                                                </div>
+                                                                }
+                                                                {!crearAutor && <Button variant="contained" style={{ "margin": "5px 0px 5px", "fontSize": "10px" }} onClick={() => { setCrearAutor(true) }} >Create an Author</Button>}
+                                                                {crearAutor && <Button variant="contained" style={{ "margin": "5px 0px 5px", "fontSize": "10px" }} onClick={() => { setCrearAutor(false) }} >chose an Author</Button>}
+
+                                                                <input className="buttonsCustom" type="submit" value='Update Book' />
                                                         </form>
                                                 </div>
-                                        </CardContent>
+                                        </CardContent>}
                                         <CardActions>
                                                 <Button href="/MisLibros" size="small">Back to my books</Button>
                                         </CardActions>
                                 </Card>
                         </div>
-                        }
                 </div>
         )
 }

@@ -16,9 +16,6 @@ import { Navigate, useNavigate } from "react-router-dom";
 import PrivateToolBar from './PrivateToolBar';
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 
-
-const cards = [45];
-
 const theme = createTheme();
 
 export default function MisPrestamos() {
@@ -67,10 +64,9 @@ export default function MisPrestamos() {
                                 </Box>
                                 {!books.myBorrows && <h1 className='unAuthorized'><DoNotDisturbIcon fontSize='large' /><div > UNAUTHORIZED, Please <a href="/">Sign In</a>!</div> <DoNotDisturbIcon fontSize='large' /></h1>}
                                 <Container sx={{ py: 8 }} maxWidth="md">
-                                        {/* End hero unit */}
                                         {books.myBorrows && <Grid container spacing={4}>
                                                 {books.myBorrows.map((card) => (
-                                                        <Grid item key={card} xs={12} sm={6} md={4}>
+                                                        <Grid item key={card.id} xs={12} sm={6} md={4}>
                                                                 <Card
                                                                         sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                                                                 >
