@@ -25,7 +25,7 @@ const EditCover = () => {
                         const resp = await axios.patch(`http://localhost:3333/covers/${idIngresada}`, formData, { headers: { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${localStorage.getItem('atoken')}` } });
                         console.log(resp)
                         if (resp.status === 200) return (
-                                navigate('/MisLibros')
+                                navigate('/MyBooks')
                         )
                 } catch (error) {
                         alert(error.response.data.message);

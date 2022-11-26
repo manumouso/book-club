@@ -75,7 +75,7 @@ export default function SignIn(props) {
 
         return (
                 <ThemeProvider theme={theme}>
-                        <PopUpMejor mostrar={cartelError} cerrar={cerrarCartel} aviso={errorMessage}/>
+                        <PopUpMejor mostrar={cartelError} cerrar={cerrarCartel} aviso={errorMessage} />
                         <Grid container component="main" sx={{ height: '100vh' }}>
                                 <CssBaseline />
                                 <Grid
@@ -151,7 +151,7 @@ export default function SignIn(props) {
                                                                 variant="contained"
                                                                 color='secondary'
                                                                 href='/catalog'
-                                                                onClick={handleGuest}
+                                                                onClick={() => { handleGuest() }}
                                                                 sx={{ mt: 3, mb: 2 }}
                                                         >
                                                                 Go to public catalog
@@ -170,6 +170,6 @@ export default function SignIn(props) {
                                         </Box>
                                 </Grid>
                         </Grid>
-                </ThemeProvider>
+                </ThemeProvider >
         );
 }

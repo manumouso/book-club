@@ -49,7 +49,7 @@ export default function MisLibros(props) {
                                         console.log('token ');
                                 }
                                 alert('Deleted !')
-                                document.location.reload(true);
+                                window.location.reload();
                         } catch (error) {
                                 alert(error.response.data.message);
                         }

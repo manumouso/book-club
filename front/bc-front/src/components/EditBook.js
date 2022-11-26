@@ -123,7 +123,7 @@ const EditBook = () => {
                                 })
                                 if (resp.status === 200) {
                                         return (
-                                                navigate('/MisLibros')
+                                                navigate('/MyBooks')
                                         )
                                 }
                         } catch (error) {

@@ -76,7 +76,7 @@ export default function SignUp(props) {
 
         return (
                 <ThemeProvider theme={theme}>
-                        <PopUpMejor mostrar={cartelError} cerrar={cerrarCartel} aviso={errorMessage}/>
+                        <PopUpMejor mostrar={cartelError} cerrar={cerrarCartel} aviso={errorMessage} />
                         <Grid container component="main" sx={{ height: '100vh' }}>
                                 <CssBaseline />
                                 <Grid
@@ -152,7 +152,7 @@ export default function SignUp(props) {
                                                                 variant="contained"
                                                                 color='secondary'
                                                                 href='/catalog'
-                                                                onClick={handleGuest}
+                                                                onClick={() => { handleGuest() }}
                                                                 sx={{ mt: 3, mb: 2 }}
                                                         >
                                                                 Go to public catalog
