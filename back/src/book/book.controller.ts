@@ -58,7 +58,6 @@ export class BookController {
     return this.bookService.filterBooks(filterDto);
   }
 
-  @Public()
   @Get('details/:bookId')
   getDetails(@Param('bookId', ParseIntPipe) bookId: number) {
     validateId(bookId);

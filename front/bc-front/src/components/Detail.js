@@ -138,8 +138,8 @@ export default function Detail() {
                                                                         </Typography>
                                                                 </CardContent>
                                                                 <CardActions>
-                                                                        {token && <Button onClick={() => { handleBorrow() }} color="success" size="large">Borrow</Button>}
-                                                                        {token && <Button onClick={() => { handleReturn() }} color="error" size="large">Return</Button>}
+                                                                        <Button onClick={() => { handleBorrow() }} color="success" size="large">Borrow</Button>
+                                                                        <Button onClick={() => { handleReturn() }} color="error" size="large">Return</Button>
                                                                 </CardActions>
                                                         </Card>
                                                 </Grid>
