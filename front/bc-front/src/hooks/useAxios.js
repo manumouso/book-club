@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Navigate, useNavigate } from "react-router-dom";
 
 const useAxios = (configObj) => {
         const {
@@ -11,6 +12,7 @@ const useAxios = (configObj) => {
         const [response, setResponse] = useState([]);
         const [error, setError] = useState('');
         const [loading, setLoading] = useState(true);
+        const navigate = useNavigate();
 
         useEffect(() => {
                 //const controller = new AbortController;
@@ -23,6 +25,10 @@ const useAxios = (configObj) => {
                                 setResponse(res.data)
                         } catch (err) {
                                 setError(err)
+                                if (err.response.status === 401)
+                                {
+                                        navigate(`/Unauthorized`)
+                                }
                         } finally {
                                 setLoading(false)
                         }

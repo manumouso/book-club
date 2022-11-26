@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { motion } from "framer-motion";
 import SignIn from './SignIn';
+import SignUp from "./SignUp";
 import MisPrestamos from './MisPrestamos';
 import MisLibros from './MisLibros';
 import Catalogo from './Catalogo';
@@ -10,6 +11,7 @@ import NewBookForm from './NewBookForm';
 import AddCover from './AddCover';
 import Detail from './Detail';
 import EditBook from './EditBook';
+import Unauthorized from './Unauthorized';
 import EditCover from './EditCover';
 
 
@@ -29,6 +31,16 @@ export default function RutasAnimadas() {
                                         <SignIn />
                                 </motion.div>}>
                         </Route>
+                        <Route path='/SignUp' element={
+                                <motion.div
+                                        initial={{ y: 10, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        exit={{ y: -10, opacity: 0 }}
+                                        transition={{ duration: 0.8 }}
+                                        className='lobby'>
+                                        <SignUp />
+                                </motion.div>}>
+                        </Route>
                         <Route path='/' element={
                                 <motion.div
                                         initial={{ y: 10, opacity: 0 }}
@@ -39,7 +51,7 @@ export default function RutasAnimadas() {
                                         <SignIn />
                                 </motion.div>}>
                         </Route>
-                        <Route path='/MisPrestamos' element={
+                        <Route path='/MyLoans' element={
                                 <motion.div
                                         initial={{ y: 10, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
@@ -49,7 +61,7 @@ export default function RutasAnimadas() {
                                         <MisPrestamos />
                                 </motion.div>}>
                         </Route>
-                        <Route path='/MisLibros' element={
+                        <Route path='/MyBooks' element={
                                 <motion.div
                                         initial={{ y: 10, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
@@ -59,7 +71,7 @@ export default function RutasAnimadas() {
                                         <MisLibros />
                                 </motion.div>}>
                         </Route>
-                        <Route path='/Catalogo' element={
+                        <Route path='/Catalog' element={
                                 <motion.div
                                         initial={{ y: 10, opacity: 0 }}
                                         animate={{ y: 0, opacity: 1 }}
@@ -107,6 +119,16 @@ export default function RutasAnimadas() {
                                         transition={{ duration: 0.8 }}
                                         className='lobby'>
                                         <EditBook />
+                                </motion.div>}>
+                        </Route>
+                        <Route path='/Unauthorized' element={
+                                <motion.div
+                                        initial={{ y: 10, opacity: 0 }}
+                                        animate={{ y: 0, opacity: 1 }}
+                                        exit={{ y: -10, opacity: 0 }}
+                                        transition={{ duration: 0.8 }}
+                                        className='lobby'>
+                                        <Unauthorized />
                                 </motion.div>}>
                         </Route>
                         <Route path='/EditCover' element={

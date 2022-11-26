@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert'
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -17,6 +18,7 @@ import useAxios from '../hooks/useAxios';
 import axios from "../apis/private"
 import { useState } from 'react';
 import { Route, withRouter, useNavigate } from 'react-router-dom';
+import PopUpMejor from './PopUpMejor';
 
 const theme = createTheme();
 
@@ -27,10 +29,15 @@ export default function SignIn(props) {
         const [username, setUsername] = useState('')
         const [password, setPassword] = useState('')
         const [user, setUser] = useState(null)
+        const [cartelError, setCartelError] = React.useState(false)
+        const [errorMessage, setErrorMessage] = useState(null)
+        const cerrarCartel = () => {
+                setCartelError(false);
+        }
 
         function redirectHomePage() {
                 return (
-                        navigate('/MisLibros')
+                        navigate('/MyBooks')
                 )
         }
 
@@ -59,7 +66,8 @@ export default function SignIn(props) {
                         redirectHomePage()
 
                 } catch (e) {
-                        alert('Wrong username or password')
+                        setErrorMessage('Wrong username or password');
+                        setCartelError(true)
                 }
 
         };
@@ -67,6 +75,7 @@ export default function SignIn(props) {
 
         return (
                 <ThemeProvider theme={theme}>
+                        <PopUpMejor mostrar={cartelError} cerrar={cerrarCartel} aviso={errorMessage}/>
                         <Grid container component="main" sx={{ height: '100vh' }}>
                                 <CssBaseline />
                                 <Grid
@@ -97,7 +106,7 @@ export default function SignIn(props) {
                                                         <LockOutlinedIcon />
                                                 </Avatar>
                                                 <Typography component="h1" variant="h5">
-                                                        Ingresa
+                                                        Sign in
                                                 </Typography>
                                                 <Box
                                                         component="form"
@@ -109,7 +118,7 @@ export default function SignIn(props) {
                                                                 required
                                                                 fullWidth
                                                                 id="email"
-                                                                label="correo"
+                                                                label="email"
                                                                 name="email"
                                                                 autoComplete="email"
                                                                 autoFocus
@@ -119,7 +128,7 @@ export default function SignIn(props) {
                                                                 required
                                                                 fullWidth
                                                                 name="password"
-                                                                label="contraseña"
+                                                                label="password"
                                                                 type="password"
                                                                 id="password"
                                                                 autoComplete="current-password"
@@ -134,28 +143,28 @@ export default function SignIn(props) {
                                                                 variant="contained"
                                                                 sx={{ mt: 3, mb: 2 }}
                                                         >
-                                                                Ingresar
+                                                                Sign in
                                                         </Button>
                                                         <Button
                                                                 type="button"
                                                                 fullWidth
                                                                 variant="contained"
                                                                 color='secondary'
-                                                                href='/catalogo'
+                                                                href='/catalog'
                                                                 onClick={handleGuest}
                                                                 sx={{ mt: 3, mb: 2 }}
                                                         >
-                                                                Ir al catalogo publico
+                                                                Go to public catalog
                                                         </Button>
                                                         <Button
                                                                 type="button"
                                                                 fullWidth
                                                                 variant="contained"
                                                                 style={{ backgroundColor: '#ef9a9a' }}
-                                                                href='/'
+                                                                href='/SignUp'
                                                                 sx={{ mt: 3, mb: 2 }}
                                                         >
-                                                                Registrase
+                                                                Sign up
                                                         </Button>
                                                 </Box>
                                         </Box>

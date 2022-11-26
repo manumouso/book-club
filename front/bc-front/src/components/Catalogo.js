@@ -35,6 +35,7 @@ export default function Catalogo() {
         const [librosPresentados, setLibrosPresentados] = React.useState()
         const [mostrarFiltados, setMostrarFiltrados] = React.useState(false)
         const [cartelError, setCartelError] = React.useState(false)
+        const [cartelMessage, setCartelMessage] = React.useState(false)
         const cerrarCartel = () => {
                 setCartelError(false);
         }
@@ -71,33 +72,36 @@ export default function Catalogo() {
                         setLibrosPresentados(filteredBooks.data)
                         setMostrarFiltrados(true)
                 } catch (error) {
-                        setErrorMsg(error.response.data)
+                        setCartelMessage(error.response.data.message);
                         setCartelError(true)
                 }
         }
 
         const resetearFiltros = () => {
                 setMostrarFiltrados(false)
-                setCartelError(true)
         }
 
         const opcionesBusqueda = [
                 { value: "isbn", label: "ISBN" },
-                { value: "title", label: "Titulo" },
-                { value: "year", label: "Año" },
-                { value: "publisher", label: "Editorial" },
-                { value: "firstName", label: "Primer nombre del autor" },
-                { value: "genre", label: "Género" },
-                { value: "lastName", label: "Apellido del autor" },
+                { value: "title", label: "Title" },
+                { value: "year", label: "Year" },
+                { value: "publisher", label: "Publisher" },
+                { value: "firstName", label: "Author first name" },
+                { value: "genre", label: "Genre" },
+                { value: "lastName", label: "Author last name" },
         ]
 
         const token = localStorage.getItem('atoken')
 
+        function clearToken() {
+                localStorage.removeItem('atoken');
+        }
+
         return (
                 <ThemeProvider theme={theme}>
-                        <PopUpMejor mostrar={cartelError} cerrar={cerrarCartel} aviso={errorMsg} />
+                        <PopUpMejor mostrar={cartelError} cerrar={cerrarCartel} aviso={cartelMessage} />
                         <CssBaseline />
-                        {token && <PrivateToolBar />}
+                        <PrivateToolBar />
                         <main>
                                 <Box
                                         sx={{
@@ -114,12 +118,12 @@ export default function Catalogo() {
                                                         color="text.primary"
                                                         gutterBottom
                                                 >
-                                                        Catálogo
+                                                        Catalog
                                                 </Typography>
                                                 <Box onSubmit={busquedaFiltrada} component='form'
                                                         className='filteredSearch'>
                                                         <Select
-                                                                placeholder={"Seleccione uno..."}
+                                                                placeholder={"Select one..."}
                                                                 options={opcionesBusqueda}
                                                                 onChange={(item) => {
                                                                         setSelectedOptions(item.value);
@@ -135,13 +139,13 @@ export default function Catalogo() {
                                                                 required
                                                                 fullWidth
                                                                 id="filtro"
-                                                                label="filtro"
+                                                                label="filter"
                                                                 name="filtro"
                                                                 autoComplete="email"
                                                                 autoFocus
                                                         />
-                                                        <Button type='submit' variant='contained'>Buscar</Button>
-                                                        <Button type='button' variant='contained' color='secondary' style={{ "marginLeft": "15px" }} onClick={resetearFiltros}>Borrar filtros</Button>
+                                                        <Button type='submit' variant='contained'>Search</Button>
+                                                        <Button type='button' variant='contained' color='secondary' onClick={resetearFiltros}>Delete filters</Button>
                                                 </Box>
                                         </Container>
                                 </Box>

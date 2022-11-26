@@ -43,6 +43,10 @@ export default function MisPrestamos() {
                 }
         })
 
+        function clearToken()
+        {
+                localStorage.removeItem('atoken');
+        }
 
         return (
                 <ThemeProvider theme={theme}>
