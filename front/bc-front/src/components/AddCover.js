@@ -26,7 +26,7 @@ const AddCover = () => {
                 try {
                         const resp = await axios.post(`http://localhost:3333/covers/${idIngresada}`, formData, { headers: { 'Content-Type': 'multipart/form-data', 'Authorization': `Bearer ${localStorage.getItem('atoken')}` } });
                         if (resp.status === 201) return (
-                                navigate('/MisLibros')
+                                navigate('/MyBooks')
                         )
                         else if (resp.status === 401) return (
                                 navigate('/Unauthorized')
