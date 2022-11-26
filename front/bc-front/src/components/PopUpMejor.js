@@ -39,14 +39,14 @@ function PopUpMejor(props) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle style={{"textAlign": "center", "color": "#97077D", "fontWeight": "bold"}} >{"Importante:"}</DialogTitle>
+        <DialogTitle style={{"textAlign": "center", "color": "#97077D", "fontWeight": "bold"}} >{"Important:"}</DialogTitle>
         <DialogContent sx={{px: "40px"}}>
           <DialogContentText id="alert-dialog-slide-description">
             {props.aviso}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          {<Button onClick={handleClose}>Entendido</Button>}
+          {<Button onClick={handleClose}>Ok</Button>}
         </DialogActions>
       </Dialog>
   

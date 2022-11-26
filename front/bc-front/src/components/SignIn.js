@@ -18,17 +18,22 @@ import useAxios from '../hooks/useAxios';
 import axios from "../apis/private"
 import { useState } from 'react';
 import { Route, withRouter, useNavigate } from 'react-router-dom';
+import PopUpMejor from './PopUpMejor';
 
 const theme = createTheme();
 
 export default function SignIn(props) {
 
         const navigate = useNavigate();
-        let errorMessage = null;
 
         const [username, setUsername] = useState('')
         const [password, setPassword] = useState('')
         const [user, setUser] = useState(null)
+        const [cartelError, setCartelError] = React.useState(false)
+        const [errorMessage, setErrorMessage] = useState(null)
+        const cerrarCartel = () => {
+                setCartelError(false);
+        }
 
 
         function redirectHomePage() {
@@ -63,8 +68,8 @@ export default function SignIn(props) {
                         redirectHomePage()
 
                 } catch (e) {
-                        alert('Wrong username or password')
-                        errorMessage = 'Wrong username or password';
+                        setErrorMessage('Wrong username or password');
+                        setCartelError(true)
                 }
 
         };
@@ -72,6 +77,7 @@ export default function SignIn(props) {
 
         return (
                 <ThemeProvider theme={theme}>
+                        <PopUpMejor mostrar={cartelError} cerrar={cerrarCartel} aviso={errorMessage}/>
                         <Grid container component="main" sx={{ height: '100vh' }}>
                                 <CssBaseline />
                                 <Grid
@@ -104,8 +110,6 @@ export default function SignIn(props) {
                                                 <Typography component="h1" variant="h5">
                                                         Sign in
                                                 </Typography>
-                                                {errorMessage && <br></br>}
-                                                {errorMessage && <Alert id="error_alert" severity="error">{errorMessage}</Alert>}
                                                 <Box
                                                         component="form"
                                                         noValidate

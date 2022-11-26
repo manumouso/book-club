@@ -16,6 +16,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import PrivateToolBar from './PrivateToolBar';
+import Unauthorized from './Unauthorized';
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
@@ -119,7 +120,7 @@ export default function MisLibros(props) {
                                                 </Typography>
                                         </Container>
                                 </Box>
-                                {!books.myBooks && <h1 className='unAuthorized'><DoNotDisturbIcon fontSize='large' /><div > UNAUTHORIZED, Please <a href="/">Sign In</a>!</div> <DoNotDisturbIcon fontSize='large' /></h1>}
+                                {!books.myBooks && <Unauthorized />}
                                 <Container sx={{ py: 8 }} maxWidth="md">
                                         {books.myBooks && <Button href="/createBook" sx={{ display: 'flex', justifyContent: 'space-between', width: '19%', '& button': { m: 1 } }} size="large" variant="contained"><AddCircleOutlineIcon />New Book</Button>}
 
