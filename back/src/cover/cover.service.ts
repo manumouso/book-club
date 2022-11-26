@@ -17,8 +17,7 @@ export class CoverService {
   ) {}
   async getBookCover(bookId: number) {
     const book = await this.bookService.findBook(bookId);
-    if (!book.coverId)
-      throw new ForbiddenException('There Is No Cover Image For This Book');
+    if (!book.coverId) return 'default.jpeg';
 
     const coverImage = await this.prisma.cover.findUnique({
       where: {
