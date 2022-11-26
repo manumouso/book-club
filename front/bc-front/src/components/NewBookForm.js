@@ -185,7 +185,7 @@ const NewBookForm = () => {
                                                 </div>
                                         </CardContent>
                                         <CardActions>
-                                                <Button href="/MisLibros" size="small">Back to my books</Button>
+                                                <Button href="/MyBooks" size="small">Back to my books</Button>
                                         </CardActions>
                                 </Card>
                         </div>
