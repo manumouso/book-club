@@ -11,7 +11,7 @@
 .formCustom {
         display: flex;
         flex-direction: column;
-        height: 36vh;
+        height: 30%;
         align-items: center;
         justify-content: space-evenly;
 }

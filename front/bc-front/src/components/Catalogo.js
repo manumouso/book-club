@@ -183,6 +183,9 @@ export default function Catalogo() {
                                                                                 <Typography>
                                                                                         Genre: {card.genre.name}
                                                                                 </Typography>
+                                                                                <Typography>
+                                                                                        Available: {card.available.toString()}
+                                                                                </Typography>
                                                                         </CardContent>
                                                                         <CardActions>
                                                                                 <Button onClick={() => { viewDetail(card.id) }} size="small">View Details</Button>
@@ -223,6 +226,9 @@ export default function Catalogo() {
                                                                                 </Typography>
                                                                                 <Typography>
                                                                                         Genre: {card.genre.name}
+                                                                                </Typography>
+                                                                                <Typography>
+                                                                                        Available: {card.available.toString()}
                                                                                 </Typography>
                                                                         </CardContent>
                                                                         <CardActions>

@@ -66,7 +66,7 @@ export class CoverService {
       const book = await this.bookService.findBook(bookId);
       this.bookService.checkOwnership(book.ownerId, userId, 'Cover Update');
       if (!book.coverId)
-        throw new ForbiddenException('There Is No Cover Image For This Book');
+        return await this.createBookCover(bookId,userId,fileDto);
 
       const previousCoverImage = await this.prisma.cover.findUnique({
         where: {

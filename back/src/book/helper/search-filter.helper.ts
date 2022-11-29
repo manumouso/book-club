@@ -76,6 +76,7 @@ export const getAllBooks = () => {
       publisher:true,
       year:true,
       coverId:true,
+      holderId:true,
       author: {
         select: {
           lastName: true,

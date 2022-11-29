@@ -49,14 +49,24 @@ export class BookService {
   }
   async getBooks() {
     const searchFilter = getAllBooks();
-    const books = await this.prisma.book.findMany({
+    return await this.prisma.book.findMany({
       ...searchFilter,
       orderBy: {
         id: 'asc',
       },
+    }).then((books)=>{
+        books.map((book) =>{
+                if (!book.holderId) {
+                        book['available']=true;
+                }else{
+                        book['available']=false
+                }
+                delete book.holderId
+        });
+        return books;
+    }).then((books)=>{
+        return Promise.resolve({books});
     });
-    if (!books) throw new UnprocessableEntityException('Cannot Get Books');
-    return { books };
   }
 
   async getBooksAmount() {
@@ -73,7 +83,7 @@ export class BookService {
       throw new ForbiddenException(
         'You Must Enter A Number When Filtering By: ' + filter,
       );
-    const books = await this.prisma.book.findMany({
+    return await this.prisma.book.findMany({
       where: {
         [filter]: valueToInt,
       },
@@ -81,14 +91,24 @@ export class BookService {
       orderBy: {
         id: 'asc',
       },
+    }).then((books)=>{
+        books.map((book) =>{
+                if (!book.holderId) {
+                        book['available']=true;
+                }else{
+                        book['available']=false
+                }
+                delete book.holderId
+        });
+        return books;
+    }).then((books)=>{
+        return Promise.resolve({books});
     });
-
-    return { books };
   }
 
   async filterStringBookTable(filter: string, value: string) {
     const searchFilter = getAllBooks();
-    const books = await this.prisma.book.findMany({
+    return await this.prisma.book.findMany({
       where: {
         [filter]: {
           contains: value,
@@ -99,9 +119,19 @@ export class BookService {
       orderBy: {
         id: 'asc',
       },
+    }).then((books)=>{
+        books.map((book) =>{
+                if (!book.holderId) {
+                        book['available']=true;
+                }else{
+                        book['available']=false
+                }
+                delete book.holderId
+        });
+        return books;
+    }).then((books)=>{
+        return Promise.resolve({books});
     });
-
-    return { books };
   }
 
   async filterStringGenreTable(value: string) {
@@ -110,7 +140,7 @@ export class BookService {
 
     const idsArr = genresIds.map((genresIds) => genresIds.id);
 
-    const books = await this.prisma.book.findMany({
+    return await this.prisma.book.findMany({
       where: {
         genreId: {
           in: idsArr,
@@ -120,9 +150,20 @@ export class BookService {
       orderBy: {
         id: 'asc',
       },
+    }).then((books)=>{
+        books.map((book) =>{
+                if (!book.holderId) {
+                        book['available']=true;
+                }else{
+                        book['available']=false
+                }
+                delete book.holderId
+        });
+        return books;
+    }).then((books)=>{
+        return Promise.resolve({books});
     });
 
-    return { books };
   }
   async filterStringAuthorTable(filter: string, value: string) {
     const searchFilter = getAllBooks();
@@ -130,7 +171,7 @@ export class BookService {
 
     const idsArr = authorsIds.map((authorsId) => authorsId.id);
 
-    const books = await this.prisma.book.findMany({
+   return await this.prisma.book.findMany({
       where: {
         authorId: {
           in: idsArr,
@@ -140,9 +181,19 @@ export class BookService {
       orderBy: {
         id: 'asc',
       },
+    }).then((books)=>{
+        books.map((book) =>{
+                if (!book.holderId) {
+                        book['available']=true;
+                }else{
+                        book['available']=false
+                }
+                delete book.holderId
+        });
+        return books;
+    }).then((books)=>{
+        return Promise.resolve({books});
     });
-
-    return { books };
   }
   async filterBooks(filterDto: FilterBookDto) {
     try {
